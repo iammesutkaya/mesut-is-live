@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy | Mesut is Live</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="back-nav">
+      <a href="index.html" class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" style="fill: currentColor; vertical-align: middle;">
+          <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"/>
+        </svg>
+        Back to Portal
+      </a>
+    </div>
+
+    <header style="text-align: left; margin-bottom: 32px;">
+      <h1>Privacy Policy</h1>
+      <p class="subtitle">Effective Date: May 17, 2026</p>
+    </header>
+
+    <main class="card">
+      <div class="content">
+        <p>
+          This Privacy Policy explains how the <strong>"Mesut is Live" Reddit Bot</strong> (referred to as "the App" or "the Bot") handles information. The App is built on Reddit's Developer Platform (Devvit) and is designed to automatically monitor a designated Twitch channel and create/pin posts on a specified subreddit when the stream goes live, and unpin/remove the post when the stream goes offline.
+        </p>
+        <p>
+          We are committed to protecting user privacy and ensuring transparency in all our data practices.
+        </p>
+
+        <hr>
+
+        <h2>1. Information We Collect</h2>
+        <h3>A. Personal Information</h3>
+        <p>
+          The App <strong>does not collect, store, or process any Personally Identifiable Information (PII)</strong> or personal data belonging to Reddit users who interact with the subreddits where the App is installed.
+        </p>
+        <h3>B. Public and Operational Data</h3>
+        <p>
+          To perform its core functions, the App accesses and processes only the following non-sensitive operational data:
+        </p>
+        <ul>
+          <li><strong>Twitch Channel Name:</strong> The public username of the Twitch stream being monitored, as configured by the subreddit moderators.</li>
+          <li><strong>Stream Metadata:</strong> Publicly available stream information retrieved from the Twitch Helix API, including the stream status (live/offline) and the current stream title.</li>
+          <li><strong>Reddit Post ID:</strong> The identifier of the Reddit post created by the Bot when the stream goes live, which is used solely to locate and unpin/remove the post when the stream goes offline.</li>
+        </ul>
+
+        <h2>2. How We Access and Use Your Data</h2>
+        <p>
+          The App uses the standard, secure Reddit Devvit environment to perform its functions:
+        </p>
+        <ul>
+          <li><strong>Scheduled Polling:</strong> Every 2 minutes, a server-side scheduler runs a query to check if the designated Twitch channel is currently streaming.</li>
+          <li><strong>Twitch API Fetch:</strong> The Bot makes secure, outgoing server-side HTTP <code>fetch</code> requests to the official, public Twitch APIs:
+            <ul>
+              <li><code>id.twitch.tv</code> (to exchange Client Credentials for a temporary Twitch API access token)</li>
+              <li><code>api.twitch.tv</code> (to fetch the live/offline status of the configured channel)</li>
+            </ul>
+          </li>
+          <li><strong>Subreddit Posting:</strong> If the stream is live, the Bot submits a post to the subreddit using Reddit's native API, stickies it to the top of the feed, and saves the post's unique ID to manage it later.</li>
+        </ul>
+
+        <h2>3. Data Storage and Retention</h2>
+        <p>
+          The App does not use any external databases or personal servers.
+        </p>
+        <ul>
+          <li><strong>Reddit Redis Store:</strong> The Bot stores operational state variables (such as <code>is_live_pinned</code> and <code>live_post_id</code>) entirely within Reddit’s secure, internal Key-Value (Redis) store provided by the Devvit platform.</li>
+          <li><strong>Retention:</strong> State data in the Redis store is persistent only as long as required to manage the active post. Once a stream ends and the corresponding post is unpinned, all associated operational state data is deleted from the Redis store.</li>
+        </ul>
+
+        <h2>4. Sharing of Information</h2>
+        <ul>
+          <li><strong>No Third-Party Sharing:</strong> The App <strong>does not share, sell, or transmit any Reddit user data</strong> to Twitch or any other third-party service.</li>
+          <li><strong>Twitch API Interaction:</strong> Outgoing requests to Twitch's API only request public stream status and do not contain any information about Reddit users, moderators, or subreddits.</li>
+          <li><strong>Reddit Platform Compliance:</strong> All activities are processed within Reddit’s infrastructure and adhere strictly to Reddit’s Developer Terms and Privacy Policy.</li>
+        </ul>
+
+        <h2>5. Security</h2>
+        <p>
+          The App is hosted entirely on Reddit's secure Developer Platform (Devvit) infrastructure. It inherits all of Reddit's enterprise-grade security protocols, access controls, and data protection mechanisms. No direct external access to the Bot’s internal state or configuration is possible.
+        </p>
+
+        <h2>6. Your Rights and Choices</h2>
+        <ul>
+          <li><strong>Moderators:</strong> Subreddit moderators have complete control over the Bot. You can change the monitored channel or completely disable/uninstall the Bot at any time through the subreddit's App Settings.</li>
+          <li><strong>Users:</strong> Because the Bot does not collect or store personal data, there is no personal profile or tracking data to access, correct, or delete.</li>
+        </ul>
+
+        <h2>7. Changes to This Privacy Policy</h2>
+        <p>
+          We may update this Privacy Policy from time to time to reflect changes in our practices or for operational, legal, or regulatory reasons. The "Effective Date" at the top of this document will be updated accordingly.
+        </p>
+
+        <h2>8. Contact Us</h2>
+        <p>
+          If you have any questions, concerns, or requests regarding this Privacy Policy or the "Mesut is Live" Reddit Bot, please contact the developer:
+        </p>
+        <ul>
+          <li><strong>Reddit Profile:</strong> <a href="https://www.reddit.com/user/iammesutkaya" target="_blank">u/iammesutkaya</a></li>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Mesut Kaya. All rights reserved. Built for the <a href="https://developers.reddit.com/" target="_blank">Reddit Developer Platform</a>.</p>
+  </footer>
+
+</body>
+</html>

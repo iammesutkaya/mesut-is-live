@@ -1,0 +1,15 @@
+{
+  "name": "mesut-is-live",
+  "blocks": {
+    "entry": "src/main.ts"
+  },
+  "permissions": {
+    "http": {
+      "enable": true,
+      "domains": [
+        "id.twitch.tv",
+        "api.twitch.tv"
+      ]
+    }
+  }
+}
