@@ -28,10 +28,241 @@ Devvit.addSettings([
     label: 'Twitch Client Secret',
     isSecret: true,
     scope: SettingScope.App,
+  },
+  {
+    type: 'string',
+    name: 'youtubeUrl',
+    label: 'YouTube Channel/Live URL (Optional)',
+    helpText: 'The full URL of your YouTube channel or live stream (e.g., https://youtube.com/c/mesut/live)',
+  },
+  {
+    type: 'string',
+    name: 'liveFlairId',
+    label: 'Live Post Flair Template ID (Optional)',
+    helpText: 'The UUID of the flair template to apply to the live post (from Mod Tools -> Post Flair)',
+  },
+  {
+    type: 'paragraph',
+    name: 'liveCommentText',
+    label: 'Auto-Pinned Comment Text (Optional)',
+    helpText: 'Text to automatically post and pin as a mod comment inside the live thread (e.g. Discord link)',
+  },
+  {
+    type: 'boolean',
+    name: 'removeOfflinePost',
+    label: 'Remove Post from Feed when Offline',
+    defaultValue: false,
+    helpText: 'Moderator action: Hides the post from the main subreddit listing when offline. It remains accessible via direct link/comment history, but won\'t flood the feed.',
+  },
+  {
+    type: 'boolean',
+    name: 'deleteOfflinePost',
+    label: 'Delete Post completely when Offline',
+    defaultValue: false,
+    helpText: 'Deletes the post and all its comments completely from Reddit when the stream ends.',
+  },
+  {
+    type: 'boolean',
+    name: 'stickyOfflinePost',
+    label: 'Enable Sticky Offline Post',
+    defaultValue: true,
+    helpText: 'Recycles a single permanent stickied post when offline to announce news and useful links. The post is unstickied when live and restickied when offline. Because it is recycled, users are never notified of a new post after creation.',
+  },
+  {
+    type: 'boolean',
+    name: 'updateSidebarWidget',
+    label: 'Enable Sidebar Widget',
+    defaultValue: false,
+    helpText: 'Creates and automatically updates a "Stream Status" text widget in your subreddit sidebar.',
+  },
+  {
+    type: 'paragraph',
+    name: 'offlinePostBody',
+    label: 'Offline Post Body (Markdown) (Optional)',
+    helpText: 'Custom markdown for the body of the offline post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+  },
+  {
+    type: 'paragraph',
+    name: 'offlineSidebarText',
+    label: 'Offline Sidebar Widget Text (Markdown) (Optional)',
+    helpText: 'Custom markdown for the body of the sidebar widget when the stream is offline. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+  },
+  {
+    type: 'paragraph',
+    name: 'liveSidebarFooter',
+    label: 'Live Sidebar Widget Custom Footer (Markdown) (Optional)',
+    helpText: 'Custom markdown to append at the bottom of the sidebar widget when the stream is live.',
   }
 ]);
 
-// Define the scheduled job
+// Helper to format a beautiful live stream status post body in markdown
+const formatLivePostBody = (streamInfo: any, channelName: string, youtubeUrl?: string): string => {
+  const title = streamInfo.title || 'Live Stream';
+  const gameName = streamInfo.game_name || 'Just Chatting';
+  const viewerCount = streamInfo.viewer_count !== undefined ? streamInfo.viewer_count.toLocaleString() : '0';
+  const startedAt = streamInfo.started_at ? new Date(streamInfo.started_at) : new Date();
+  
+  // Calculate uptime
+  const elapsedMs = Date.now() - startedAt.getTime();
+  const hours = Math.floor(elapsedMs / 3600000);
+  const minutes = Math.floor((elapsedMs % 3600000) / 60000);
+  const uptimeText = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+
+  let body = `### 🔴 LIVE NOW: ${title}
+
+* **Category/Game:** ${gameName}
+* **Current Viewers:** ${viewerCount}
+* **Uptime:** live for ${uptimeText}
+
+---
+### 📺 Where to watch:
+* **Twitch:** [twitch.tv/${channelName}](https://twitch.tv/${channelName})`;
+
+  if (youtubeUrl) {
+    body += `\n* **YouTube:** [Watch on YouTube](${youtubeUrl})`;
+  }
+
+  body += `\n\n---\n*Stats are auto-updated in real-time by the subreddit bot.*`;
+  return body;
+};
+
+// Helper to format a concluding offline post body in markdown
+const formatOfflinePostBody = (channelName: string, youtubeUrl?: string, customBody?: string): string => {
+  const content = customBody || `### 😴 STREAM OFFLINE\n\nThe stream has ended. Thank you for watching! \n\n---\n### 📺 Channels:\n* **Twitch:** [twitch.tv/{channel}](https://twitch.tv/{channel})\n* **YouTube:** [Watch VODs on YouTube]({youtube_url})\n\n---\n*This live thread has concluded. VODs and highlights may be available on the links above.*`;
+
+  let result = content.replace(/{channel}/g, channelName);
+  if (youtubeUrl) {
+    result = result.replace(/{youtube_url}/g, youtubeUrl);
+  } else {
+    // Remove lines containing youtube_url placeholder if not configured
+    result = result
+      .split('\n')
+      .filter(line => !line.includes('{youtube_url}'))
+      .join('\n');
+  }
+  return result;
+};
+
+// Helper to format a beautiful sidebar widget markdown
+const formatSidebarWidgetText = (
+  isLive: boolean,
+  streamInfo: any,
+  displayName: string,
+  channelName: string,
+  youtubeUrl?: string,
+  customOfflineText?: string,
+  liveFooter?: string
+): string => {
+  if (isLive && streamInfo) {
+    const title = streamInfo.title || 'Live Stream';
+    const gameName = streamInfo.game_name || 'Just Chatting';
+    const viewerCount = streamInfo.viewer_count !== undefined ? streamInfo.viewer_count : 0;
+    
+    let uptimeStr = '';
+    if (streamInfo.started_at) {
+      const startTime = new Date(streamInfo.started_at).getTime();
+      const diffMs = Date.now() - startTime;
+      const diffHrs = Math.floor(diffMs / 3600000);
+      const diffMins = Math.floor((diffMs % 3600000) / 60000);
+      uptimeStr = diffHrs > 0 ? `${diffHrs}h ${diffMins}m` : `${diffMins}m`;
+    }
+
+    let text = `# 🚨 ${displayName} is LIVE! 🚨\n\n`;
+    text += `* **Game:** ${gameName}\n`;
+    text += `* **Viewers:** ${viewerCount.toLocaleString()}\n`;
+    if (uptimeStr) {
+      text += `* **Uptime:** live for ${uptimeStr}\n`;
+    }
+    text += `\n**Title:**\n${title}\n\n`;
+    text += `[**👉 Watch Live on Twitch**](https://twitch.tv/${channelName})`;
+    
+    if (youtubeUrl) {
+      text += `\n\n[**📺 Watch on YouTube**](${youtubeUrl})`;
+    }
+    
+    if (liveFooter) {
+      text += `\n\n${liveFooter}`;
+    }
+    return text;
+  } else {
+    const content = customOfflineText || `# 😴 {display_name} is OFFLINE 😴\n\nThe stream is currently offline. Follow the channels below to get notified when we go live!\n\n* [**Twitch Channel**](https://twitch.tv/{channel})\n* [**YouTube Channel**]({youtube_url})`;
+
+    let result = content
+      .replace(/{channel}/g, channelName)
+      .replace(/{display_name}/g, displayName);
+
+    if (youtubeUrl) {
+      result = result.replace(/{youtube_url}/g, youtubeUrl);
+    } else {
+      // Remove lines containing youtube_url placeholder if not configured
+      result = result
+        .split('\n')
+        .filter(line => !line.includes('{youtube_url}'))
+        .join('\n');
+    }
+    return result;
+  }
+};
+
+// Helper to ensure the sticky offline post is created and stickied
+const ensureStickyOfflinePost = async (context: any, channel: string, youtubeUrl?: string) => {
+  const cachedDisplayName = await context.redis.get('twitch_display_name');
+  const displayName = cachedDisplayName || channel;
+  const customOfflineBody = await context.settings.get('offlinePostBody') as string | undefined;
+  const concludingBody = formatOfflinePostBody(channel, youtubeUrl, customOfflineBody);
+  const offlinePostTitle = `😴${displayName} is OFFLINE! CHECK OUT NEWS & USEFUL LINKS😴`;
+  const offlinePostId = await context.redis.get('offline_post_id');
+  let offlinePostExists = false;
+
+  if (offlinePostId) {
+    try {
+      const offlinePost = await context.reddit.getPostById(offlinePostId);
+      
+      // Clear existing comments to start fresh
+      try {
+        const comments = await offlinePost.comments.all();
+        for (const comment of comments) {
+          try {
+            await comment.remove();
+          } catch (commentError) {
+            console.error(`Failed to remove comment ${comment.id}:`, commentError);
+          }
+        }
+        console.log(`Cleared comments for existing offline post: ${offlinePostId}`);
+      } catch (commentFetchError) {
+        console.error('Failed to fetch/remove comments:', commentFetchError);
+      }
+
+      await offlinePost.edit({ text: concludingBody });
+      await offlinePost.sticky();
+      console.log(`Successfully updated and stickied existing offline post: ${offlinePostId}`);
+      offlinePostExists = true;
+    } catch (fetchError) {
+      console.error('Failed to fetch/sticky existing offline post, will recreate:', fetchError);
+    }
+  }
+
+  if (!offlinePostExists) {
+    try {
+      const subreddit = await context.reddit.getCurrentSubreddit();
+      const offlinePost = await context.reddit.submitPost({
+        title: offlinePostTitle,
+        subredditName: subreddit.name,
+        text: concludingBody,
+      });
+      await offlinePost.sticky();
+      await context.redis.set('offline_post_id', offlinePost.id);
+      console.log(`Successfully created, stickied, and cached new offline post: ${offlinePost.id}`);
+    } catch (createError) {
+      console.error('Failed to create new offline post:', createError);
+    }
+  }
+  
+  // Set redis key confirming it has been pinned
+  await context.redis.set('is_offline_post_pinned', 'true');
+};
+
+// Define the scheduled status checking job
 Devvit.addSchedulerJob({
   name: 'check-twitch-status',
   onRun: async (_, context) => {
@@ -39,88 +270,358 @@ Devvit.addSchedulerJob({
     const channel = await context.settings.get('twitchChannel');
     const clientId = await context.settings.get('twitchClientId');
     const secret = await context.settings.get('twitchClientSecret');
+    const liveFlairId = await context.settings.get('liveFlairId');
+    const youtubeUrl = await context.settings.get('youtubeUrl') as string | undefined;
+    const removeOfflinePost = await context.settings.get('removeOfflinePost') as boolean | undefined;
+    const deleteOfflinePost = await context.settings.get('deleteOfflinePost') as boolean | undefined;
+    const stickyOfflinePost = await context.settings.get('stickyOfflinePost') as boolean | undefined;
+    const updateSidebarWidget = await context.settings.get('updateSidebarWidget') as boolean | undefined;
+    const offlinePostBody = await context.settings.get('offlinePostBody') as string | undefined;
+    const offlineSidebarText = await context.settings.get('offlineSidebarText') as string | undefined;
+    const liveSidebarFooter = await context.settings.get('liveSidebarFooter') as string | undefined;
     
     if (!channel || !clientId || !secret) {
       console.log(`Missing Twitch configuration - Channel: ${!!channel}, ClientID: ${!!clientId}, Secret: ${!!secret}`);
       return;
     }
 
-    // 2. Fetch Twitch Token (In production, you should cache this in Redis!)
-    const tokenRes = await fetch(`https://id.twitch.tv/oauth2/token?client_id=${clientId}&client_secret=${secret}&grant_type=client_credentials`, {
-      method: 'POST'
-    });
+    // 2. Fetch Twitch Token (Cached in Redis for 24 hours to prevent rate limiting)
+    const cachedToken = await context.redis.get('twitch_access_token');
+    let token = '';
     
-    if (!tokenRes.ok) {
-      console.error('Failed to get Twitch Token');
-      return;
+    if (!cachedToken) {
+      console.log('Cache miss: Fetching new Twitch Access Token...');
+      try {
+        const tokenRes = await fetch(`https://id.twitch.tv/oauth2/token?client_id=${clientId}&client_secret=${secret}&grant_type=client_credentials`, {
+          method: 'POST'
+        });
+        
+        if (!tokenRes.ok) {
+          console.error('Failed to get Twitch Token');
+          return;
+        }
+        
+        const tokenData = await tokenRes.json();
+        const accessToken = tokenData.access_token as string | undefined;
+        
+        if (!accessToken) {
+          console.error('Twitch Access Token not found in response');
+          return;
+        }
+        
+        token = accessToken;
+        
+        // Cache token for 24 hours (86400 seconds)
+        await context.redis.set('twitch_access_token', token);
+        await context.redis.expire('twitch_access_token', 86400);
+        console.log('Successfully cached Twitch Access Token.');
+      } catch (tokenError) {
+        console.error('Error fetching Twitch token:', tokenError);
+        return;
+      }
+    } else {
+      console.log('Cache hit: Using cached Twitch Access Token.');
+      token = cachedToken;
     }
-    
-    const tokenData = await tokenRes.json();
-    const token = tokenData.access_token;
 
     // 3. Check Stream Status
-    const streamRes = await fetch(`https://api.twitch.tv/helix/streams?user_login=${channel}`, {
-      headers: {
-        'Client-ID': clientId as string,
-        'Authorization': `Bearer ${token}`
+    let isLive = false;
+    let streamInfo: any = null;
+    try {
+      const streamRes = await fetch(`https://api.twitch.tv/helix/streams?user_login=${channel}`, {
+        headers: {
+          'Client-ID': clientId as string,
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!streamRes.ok) {
+        console.error('Failed to fetch Twitch stream status');
+        return;
       }
-    });
-    
-    if (!streamRes.ok) {
-      console.error('Failed to fetch Twitch stream status');
+
+      const streamData = await streamRes.json();
+      isLive = streamData.data && streamData.data.length > 0;
+      if (isLive) {
+        streamInfo = streamData.data[0];
+      }
+    } catch (streamError) {
+      console.error('Error checking stream status:', streamError);
       return;
     }
-
-    const streamData = await streamRes.json();
-    const isLive = streamData.data && streamData.data.length > 0;
     
     // 4. Update Reddit State
     const isCurrentlyPinned = await context.redis.get('is_live_pinned');
     
-    if (isLive && !isCurrentlyPinned) {
-      console.log('Stream went live! Posting and pinning...');
-      const subreddit = await context.reddit.getCurrentSubreddit();
-      
-      const post = await context.reddit.submitPost({
-        title: `🔴 LIVE NOW: ${streamData.data[0].title}`,
-        subredditName: subreddit.name,
-        text: `Come watch the stream: https://twitch.tv/${channel}`,
-      });
-      await post.sticky();
-      
-      // Save state to redis
-      await context.redis.set('is_live_pinned', 'true');
-      await context.redis.set('live_post_id', post.id);
-      
-    } else if (!isLive && isCurrentlyPinned) {
-      console.log('Stream went offline! Unpinning...');
-      const postId = await context.redis.get('live_post_id');
-      if (postId) {
-        const post = await context.reddit.getPostById(postId);
-        await post.unsticky();
+    if (isLive && streamInfo) {
+      const postBody = formatLivePostBody(streamInfo, channel as string, youtubeUrl);
+      const displayName = streamInfo.user_name || channel;
+      const postTitle = `🚨${displayName} is LIVE!🚨 - ${streamInfo.title}`;
+
+      // Reset offline grace period timer if it was active
+      const offlineSince = await context.redis.get('offline_since');
+      if (offlineSince) {
+        await context.redis.del('offline_since');
+        console.log('Stream went back online. Cancelled offline grace period.');
+      }
+
+      if (!isCurrentlyPinned) {
+        // Set the flag immediately to lock out concurrent job executions and prevent race conditions
+        await context.redis.set('is_live_pinned', 'true');
+        await context.redis.set('twitch_display_name', displayName);
+        console.log('Stream went live! Posting and pinning...');
+        
+        try {
+          // Unsticky offline post if active
+          if (stickyOfflinePost) {
+            await context.redis.del('is_offline_post_pinned');
+            const offlinePostId = await context.redis.get('offline_post_id');
+            if (offlinePostId) {
+              try {
+                const offlinePost = await context.reddit.getPostById(offlinePostId);
+                await offlinePost.unsticky();
+                console.log(`Successfully unstickied offline post: ${offlinePostId}`);
+              } catch (unstickyError) {
+                console.error('Failed to unsticky offline post:', unstickyError);
+              }
+            }
+          }
+
+          const subreddit = await context.reddit.getCurrentSubreddit();
+          const post = await context.reddit.submitPost({
+            title: postTitle,
+            subredditName: subreddit.name,
+            text: postBody,
+          });
+          await post.sticky();
+          
+          // Apply custom flair if template ID is provided
+          if (liveFlairId) {
+            try {
+              await context.reddit.setPostFlair({
+                postId: post.id,
+                subredditName: subreddit.name,
+                flairTemplateId: liveFlairId as string,
+              });
+              console.log(`Successfully applied post flair: ${liveFlairId}`);
+            } catch (flairError) {
+              console.error('Failed to set post flair:', flairError);
+            }
+          }
+
+          // Submit and sticky comment if text is provided
+          const liveCommentText = await context.settings.get('liveCommentText');
+          if (liveCommentText) {
+            try {
+              const comment = await context.reddit.submitComment({
+                id: post.id,
+                text: liveCommentText as string,
+              });
+              await comment.distinguish(true);
+              console.log('Successfully posted and pinned moderator comment.');
+            } catch (commentError) {
+              console.error('Failed to post moderator comment:', commentError);
+            }
+          }
+          
+          // Save post ID to redis
+          await context.redis.set('live_post_id', post.id);
+          console.log(`Successfully posted and pinned: ${post.id}`);
+        } catch (e) {
+          console.error('Failed to post stream status to Reddit, resetting lock:', e);
+          // Clear lock if the operation failed, so we can retry on next cron execution
+          await context.redis.del('is_live_pinned');
+        }
+      } else {
+        // Stream is already live. Let's update the post with real-time stats (viewer count, uptime, game, etc.)
+        console.log('Stream is still live. Updating post stats in real-time...');
+        const postId = await context.redis.get('live_post_id');
+        if (postId) {
+          try {
+            const post = await context.reddit.getPostById(postId);
+            await post.edit({ text: postBody });
+            console.log(`Successfully updated live post stats for: ${postId}`);
+          } catch (e) {
+            console.error('Failed to update live post stats:', e);
+          }
+        }
       }
       
-      // Clear state from redis
-      await context.redis.del('is_live_pinned');
-      await context.redis.del('live_post_id');
+    } else if (!isLive && isCurrentlyPinned) {
+      // Stream is detected offline but was marked pinned. Check offline grace period!
+      const offlineSince = await context.redis.get('offline_since');
+      
+      if (!offlineSince) {
+        // First check detecting offline status. Start the 6-minute grace period!
+        const timestamp = Date.now().toString();
+        await context.redis.set('offline_since', timestamp);
+        console.log('Stream detected offline. Starting 6-minute grace period buffer...');
+      } else {
+        // Subsequent check detecting offline status. Parse and check elapsed time.
+        const firstOfflineTime = parseInt(offlineSince, 10);
+        const elapsedMinutes = (Date.now() - firstOfflineTime) / 60000;
+        
+        console.log(`Stream is still offline. Grace period active: ${elapsedMinutes.toFixed(1)}m elapsed of 6m.`);
+        
+        if (elapsedMinutes >= 6) {
+          console.log('Grace period expired! Concluding post and unpinning...');
+          
+          // Clear live state immediately to prevent duplicate conclude/unpin calls
+          await context.redis.del('is_live_pinned');
+          await context.redis.del('offline_since');
+          const postId = await context.redis.get('live_post_id');
+          await context.redis.del('live_post_id');
+          
+          if (postId) {
+            try {
+              const post = await context.reddit.getPostById(postId);
+              
+              if (deleteOfflinePost) {
+                console.log(`Deleting post completely: ${postId}`);
+                await post.delete();
+              } else if (removeOfflinePost) {
+                console.log(`Removing post from feed: ${postId}`);
+                await post.remove();
+              } else {
+                // Update post body with a concluding offline conclusion message
+                try {
+                  const concludingBody = formatOfflinePostBody(channel as string, youtubeUrl, offlinePostBody);
+                  await post.edit({ text: concludingBody });
+                  console.log(`Successfully updated concluding body for post: ${postId}`);
+                } catch (editError) {
+                  console.error('Failed to update concluding body:', editError);
+                }
+                
+                // Unpin the concluding post
+                await post.unsticky();
+                console.log(`Successfully unpinned concluding post: ${postId}`);
+              }
+            } catch (e) {
+              console.error('Failed to conclude/unsticky/delete/remove post:', e);
+            }
+          }
+
+          // Handle sticky offline post if enabled
+          if (stickyOfflinePost) {
+            await ensureStickyOfflinePost(context, channel as string, youtubeUrl);
+          }
+        }
+      }
+    } else if (!isLive && !isCurrentlyPinned) {
+      // Stream is offline and we are not currently transitioning. Ensure offline post is active if enabled.
+      if (stickyOfflinePost) {
+        const isOfflinePostPinned = await context.redis.get('is_offline_post_pinned');
+        if (!isOfflinePostPinned) {
+          console.log('Offline post is not marked as pinned in Redis. Ensuring sticky offline post is active...');
+          await ensureStickyOfflinePost(context, channel as string, youtubeUrl);
+        }
+      }
+    }
+
+    // 5. Update Sidebar Widget if enabled
+    if (updateSidebarWidget) {
+      try {
+        const cachedDisplayName = await context.redis.get('twitch_display_name');
+        const displayName = isLive && streamInfo ? (streamInfo.user_name || channel) : (cachedDisplayName || channel);
+        const widgetText = formatSidebarWidgetText(
+          isLive,
+          streamInfo,
+          displayName as string,
+          channel as string,
+          youtubeUrl,
+          offlineSidebarText,
+          liveSidebarFooter
+        );
+        
+        const currentSubredditName = await context.reddit.getCurrentSubredditName();
+        const widgets = await context.reddit.getWidgets(currentSubredditName);
+        const widgetName = 'STREAM STATUS';
+        
+        let statusWidget = widgets.find(
+          (w) => w.name === widgetName || (w.name && w.name.toLowerCase().includes('stream status'))
+        );
+
+        if (statusWidget) {
+          await context.reddit.updateWidget({
+            type: 'textarea',
+            subreddit: currentSubredditName,
+            id: statusWidget.id,
+            shortName: widgetName,
+            text: widgetText
+          });
+          console.log(`Successfully updated sidebar widget: ${statusWidget.id}`);
+        } else {
+          const newWidget = await context.reddit.addWidget({
+            type: 'textarea',
+            subreddit: currentSubredditName,
+            shortName: widgetName,
+            text: widgetText
+          });
+          console.log(`Successfully created and added sidebar widget: ${newWidget.id}`);
+        }
+      } catch (widgetError) {
+        console.error('Failed to update sidebar widget:', widgetError);
+      }
     }
   }
 });
 
-// Trigger the job to start running when the app is installed
+// Helper function to safely clear existing jobs and schedule a new one
+const scheduleCheckStatusJob = async (context: any) => {
+  console.log('Clearing existing scheduled jobs to prevent duplicates...');
+  try {
+    const jobs = await context.scheduler.listJobs();
+    for (const job of jobs) {
+      if (job.name === 'check-twitch-status') {
+        console.log(`Cancelling duplicate/old scheduled job: ${job.id}`);
+        await context.scheduler.cancelJob(job.id);
+      }
+    }
+    
+    console.log('Scheduling check-twitch-status job (every 2 minutes)...');
+    await context.scheduler.runJob({
+      name: 'check-twitch-status',
+      cron: '*/2 * * * *',
+    });
+    console.log('Successfully scheduled check-twitch-status job.');
+  } catch (e) {
+    console.error('Failed to setup scheduled job:', e);
+  }
+};
+
+// Trigger the job to start running when the app is installed or upgraded
 Devvit.addTrigger({
   event: 'AppInstall',
   onEvent: async (_, context) => {
-    console.log('App installed! Scheduling Twitch check to run every 2 minutes...');
-    try {
-      await context.scheduler.runJob({
-        name: 'check-twitch-status',
-        cron: '*/2 * * * *' // Run every 2 minutes
-      });
-    } catch (e) {
-      console.error('Failed to schedule job', e);
-    }
+    console.log('App installed trigger fired.');
+    await scheduleCheckStatusJob(context);
   }
+});
+
+Devvit.addTrigger({
+  event: 'AppUpgrade',
+  onEvent: async (_, context) => {
+    console.log('App upgraded trigger fired.');
+    await scheduleCheckStatusJob(context);
+  }
+});
+
+// Add a moderator menu item to manually reset/start the scheduler and clear bot state
+Devvit.addMenuItem({
+  label: 'Reset Twitch Stream Bot',
+  location: 'subreddit',
+  forUserType: 'moderator',
+  onPress: async (_, context) => {
+    console.log('Manual bot reset triggered by moderator. Clearing scheduler and Redis state...');
+    await scheduleCheckStatusJob(context);
+    await context.redis.del('is_live_pinned');
+    await context.redis.del('live_post_id');
+    await context.redis.del('offline_since');
+    await context.redis.del('offline_post_id');
+    await context.redis.del('twitch_display_name');
+    await context.redis.del('is_offline_post_pinned');
+    context.ui.showToast('Twitch Stream Bot has been reset successfully!');
+  },
 });
 
 export default Devvit;

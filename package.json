@@ -4,9 +4,9 @@
   "license": "BSD-3-Clause",
   "type": "module",
   "dependencies": {
-    "@devvit/public-api": "0.12.23"
+    "@devvit/public-api": "0.12.24"
   },
   "devDependencies": {
-    "typescript": "5.5.4"
+    "typescript": "5.8.3"
   }
 }
