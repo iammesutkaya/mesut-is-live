@@ -70,6 +70,19 @@ Devvit.addSettings([
     helpText: 'Creates and automatically updates a "Stream Status" text widget in your subreddit sidebar.',
   },
   {
+    type: 'boolean',
+    name: 'enableHighlightsPost',
+    label: 'Enable Stream Highlights Post',
+    defaultValue: false,
+    helpText: 'Automatically posts a compilation of top Twitch clips generated during the stream when it ends.',
+  },
+  {
+    type: 'string',
+    name: 'highlightsFlairId',
+    label: 'Highlights Post Flair Template ID (Optional)',
+    helpText: 'The UUID of the flair template to apply to the stream highlights post (from Mod Tools -> Post Flair)',
+  },
+  {
     type: 'paragraph',
     name: 'offlinePostBody',
     label: 'Offline Post Body (Markdown) (Optional)',
@@ -325,6 +338,97 @@ const ensureStickyOfflinePost = async (context: any, channel: string, youtubeUrl
   await context.redis.set('is_offline_post_pinned', 'true');
 };
 
+// Helper to compile and post stream highlights (top Twitch clips)
+const postStreamHighlights = async (
+  context: any,
+  clientId: string,
+  token: string,
+  broadcasterId: string,
+  startedAt: string,
+  streamTitle: string,
+  channelName: string,
+  flairTemplateId?: string
+) => {
+  try {
+    console.log(`Fetching top clips for broadcaster ${broadcasterId} since ${startedAt}...`);
+    const endedAt = new Date().toISOString();
+    const url = `https://api.twitch.tv/helix/clips?broadcaster_id=${broadcasterId}&started_at=${startedAt}&ended_at=${endedAt}&first=20`;
+    
+    const res = await fetch(url, {
+      headers: {
+        'Client-ID': clientId,
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!res.ok) {
+      console.error(`Failed to fetch clips from Twitch Helix API: ${res.status} ${res.statusText}`);
+      return;
+    }
+
+    const json = await res.json();
+    const clips = json.data || [];
+    
+    if (clips.length === 0) {
+      console.log('No clips generated during this stream session.');
+      return;
+    }
+
+    // Sort clips by view count descending and take top 5
+    const topClips = clips
+      .sort((a: any, b: any) => (b.view_count || 0) - (a.view_count || 0))
+      .slice(0, 5);
+
+    console.log(`Found ${clips.length} clips. Posting top ${topClips.length} clips to Reddit...`);
+
+    const dateStr = new Date(startedAt).toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    const postTitle = `🎥 Stream Highlights: ${streamTitle} (${dateStr})`;
+    
+    let body = `### 🎥 Top Clips from today's stream:\n\n`;
+    
+    topClips.forEach((clip: any, index: number) => {
+      const views = clip.view_count !== undefined ? clip.view_count.toLocaleString() : '0';
+      const title = clip.title || 'Untitled Clip';
+      const creator = clip.creator_name || 'Anonymous';
+      
+      body += `${index + 1}. **[${title}](${clip.url})**\n`;
+      body += `   * **Views:** ${views}\n`;
+      body += `   * **Clipped by:** ${creator}\n\n`;
+    });
+    
+    body += `---\n*Highlights compiled automatically from Twitch by the subreddit bot. Watch VODs and catch the next stream live on [twitch.tv/${channelName}](https://twitch.tv/${channelName})!*`;
+
+    const subreddit = await context.reddit.getCurrentSubreddit();
+    const highlightsPost = await context.reddit.submitPost({
+      title: postTitle,
+      subredditName: subreddit.name,
+      text: body
+    });
+
+    console.log(`Successfully created stream highlights post: ${highlightsPost.id}`);
+
+    if (flairTemplateId) {
+      try {
+        await context.reddit.setPostFlair({
+          postId: highlightsPost.id,
+          subredditName: subreddit.name,
+          flairTemplateId: flairTemplateId
+        });
+        console.log(`Successfully applied flair to highlights post: ${flairTemplateId}`);
+      } catch (flairError) {
+        console.error('Failed to set flair on highlights post:', flairError);
+      }
+    }
+  } catch (error) {
+    console.error('Error creating stream highlights post:', error);
+  }
+};
+
 // Define the scheduled status checking job
 Devvit.addSchedulerJob({
   name: 'check-twitch-status',
@@ -339,6 +443,8 @@ Devvit.addSchedulerJob({
     const deleteOfflinePost = await context.settings.get('deleteOfflinePost') as boolean | undefined;
     const stickyOfflinePost = await context.settings.get('stickyOfflinePost') as boolean | undefined;
     const updateSidebarWidget = await context.settings.get('updateSidebarWidget') as boolean | undefined;
+    const enableHighlightsPost = await context.settings.get('enableHighlightsPost') as boolean | undefined;
+    const highlightsFlairId = await context.settings.get('highlightsFlairId') as string | undefined;
     const livePostBody = await context.settings.get('livePostBody') as string | undefined;
     const livePostFooter = await context.settings.get('livePostFooter') as string | undefined;
     const offlinePostBody = await context.settings.get('offlinePostBody') as string | undefined;
@@ -437,6 +543,18 @@ Devvit.addSchedulerJob({
         // Set the flag immediately to lock out concurrent job executions and prevent race conditions
         await context.redis.set('is_live_pinned', 'true');
         await context.redis.set('twitch_display_name', displayName);
+
+        // Cache stream details to fetch highlights later when the stream concludes
+        if (streamInfo.user_id) {
+          await context.redis.set('twitch_broadcaster_id', streamInfo.user_id);
+        }
+        if (streamInfo.started_at) {
+          await context.redis.set('twitch_started_at', streamInfo.started_at);
+        }
+        if (streamInfo.title) {
+          await context.redis.set('twitch_stream_title', streamInfo.title);
+        }
+
         console.log('Stream went live! Posting and pinning...');
         
         try {
@@ -462,6 +580,14 @@ Devvit.addSchedulerJob({
             text: postBody,
           });
           await post.sticky();
+
+          // Set suggested comment sort to new
+          try {
+            await post.setSuggestedCommentSort('NEW');
+            console.log('Successfully set suggested comment sort to NEW.');
+          } catch (sortError) {
+            console.error('Failed to set suggested comment sort:', sortError);
+          }
           
           // Apply custom flair if template ID is provided
           if (liveFlairId) {
@@ -540,6 +666,16 @@ Devvit.addSchedulerJob({
           const postId = await context.redis.get('live_post_id');
           await context.redis.del('live_post_id');
           
+          // Get the details we cached when the stream went live
+          const broadcasterId = await context.redis.get('twitch_broadcaster_id');
+          const startedAt = await context.redis.get('twitch_started_at');
+          const streamTitle = await context.redis.get('twitch_stream_title') || 'Recent Stream';
+          
+          // Clean up the cached stream details
+          await context.redis.del('twitch_broadcaster_id');
+          await context.redis.del('twitch_started_at');
+          await context.redis.del('twitch_stream_title');
+          
           if (postId) {
             try {
               const post = await context.reddit.getPostById(postId);
@@ -547,25 +683,53 @@ Devvit.addSchedulerJob({
               if (deleteOfflinePost) {
                 console.log(`Deleting post completely: ${postId}`);
                 await post.delete();
-              } else if (removeOfflinePost) {
-                console.log(`Removing post from feed: ${postId}`);
-                await post.remove();
               } else {
-                // Update post body with a concluding offline conclusion message
-                try {
-                  const concludingBody = formatOfflinePostBody(channel as string, youtubeUrl, offlinePostBody, offlinePostFooter);
-                  await post.edit({ text: concludingBody });
-                  console.log(`Successfully updated concluding body for post: ${postId}`);
-                } catch (editError) {
-                  console.error('Failed to update concluding body:', editError);
+                if (removeOfflinePost) {
+                  console.log(`Removing post from feed: ${postId}`);
+                  await post.remove();
+                } else {
+                  // Update post body with a concluding offline conclusion message
+                  try {
+                    const concludingBody = formatOfflinePostBody(channel as string, youtubeUrl, offlinePostBody, offlinePostFooter);
+                    await post.edit({ text: concludingBody });
+                    console.log(`Successfully updated concluding body for post: ${postId}`);
+                  } catch (editError) {
+                    console.error('Failed to update concluding body:', editError);
+                  }
+                  
+                  // Unpin the concluding post
+                  await post.unsticky();
+                  console.log(`Successfully unpinned concluding post: ${postId}`);
                 }
-                
-                // Unpin the concluding post
-                await post.unsticky();
-                console.log(`Successfully unpinned concluding post: ${postId}`);
+
+                // Lock the post to prevent further comments since stream has ended
+                try {
+                  await post.lock();
+                  console.log(`Successfully locked concluding post: ${postId}`);
+                } catch (lockError) {
+                  console.error('Failed to lock concluding post:', lockError);
+                }
               }
             } catch (e) {
               console.error('Failed to conclude/unsticky/delete/remove post:', e);
+            }
+          }
+
+          // Trigger stream highlights compilation if enabled
+          if (enableHighlightsPost && broadcasterId && startedAt) {
+            try {
+              await postStreamHighlights(
+                context,
+                clientId as string,
+                token,
+                broadcasterId,
+                startedAt,
+                streamTitle,
+                channel as string,
+                highlightsFlairId
+              );
+            } catch (highlightsError) {
+              console.error('Failed to trigger postStreamHighlights:', highlightsError);
             }
           }
 
