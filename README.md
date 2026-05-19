@@ -67,7 +67,6 @@ Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **mesut-is-li
 | **Twitch Client Secret** | `String (Secret)` | Your Twitch Developer Client Secret (scoped to App). |
 | **YouTube Channel/Live URL (Optional)** | `String` | The full link to your YouTube channel or live stream (e.g. `https://youtube.com/c/mesut/live`). |
 | **Live Post Flair Template ID (Optional)** | `String` | The UUID of the flair template to apply to the post (found in Subreddit Mod Tools ➔ Post Flair). |
-| **Auto-Pinned Comment Text (Optional)** | `Paragraph` | Custom multiline markdown to pin at the top of the comment section (supports paragraphs, list formatting, and links). |
 | **Remove Post from Feed when Offline** | `Boolean` | Moderator action: Hides the post from the main subreddit listing when offline (prevents feed flooding while keeping comments/links active). |
 | **Delete Post completely when Offline** | `Boolean` | Completely deletes the post and comments from Reddit when the stream ends. |
 | **Enable Sticky Offline Post** | `Boolean` | Recycles a single permanent stickied post when offline (`😴[DisplayName] is OFFLINE! CHECK OUT NEWS & USEFUL LINKS😴`) to prevent new-post notifications, automatically clearing/flushing old comments on each transition so the comment section starts fresh. |
@@ -78,6 +77,7 @@ Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **mesut-is-li
 | **Offline Sidebar Widget Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the offline sidebar widget (works with both custom and default templates). Useful for adding Discord/social links or rules. |
 | **Live Post Body (Optional)** | `Paragraph` | Custom markdown for the body of the live post. If empty, the default template is used. You can use `{channel}`, `{display_name}`, `{game}`, `{viewers}`, `{uptime}`, `{title}`, and `{youtube_url}` as dynamic placeholders. |
 | **Live Post Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the live post (works with both custom and default templates). Useful for adding Discord/social links or rules. |
+| **Auto-Pinned Comment Text (Optional)** | `Paragraph` | Custom multiline markdown to pin at the top of the comment section (supports paragraphs, list formatting, and links). |
 | **Live Sidebar Widget Text (Optional)** | `Paragraph` | Custom markdown for the sidebar widget when the stream is live. If empty, the default template is used. You can use `{channel}`, `{display_name}`, `{game}`, `{viewers}`, `{uptime}`, `{title}`, and `{youtube_url}` as placeholders. |
 | **Live Sidebar Widget Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the sidebar widget when the stream is live. Perfect for adding Discord links, rules, etc. |
 

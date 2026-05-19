@@ -42,12 +42,6 @@ Devvit.addSettings([
     helpText: 'The UUID of the flair template to apply to the live post (from Mod Tools -> Post Flair)',
   },
   {
-    type: 'paragraph',
-    name: 'liveCommentText',
-    label: 'Auto-Pinned Comment Text (Optional)',
-    helpText: 'Text to automatically post and pin as a mod comment inside the live thread (e.g. Discord link)',
-  },
-  {
     type: 'boolean',
     name: 'removeOfflinePost',
     label: 'Remove Post from Feed when Offline',
@@ -110,6 +104,12 @@ Devvit.addSettings([
     name: 'livePostFooter',
     label: 'Live Post Custom Footer (Markdown) (Optional)',
     helpText: 'Custom markdown to append at the bottom of the live post (works with both custom and default templates). Useful for adding Discord/social links or rules.',
+  },
+  {
+    type: 'paragraph',
+    name: 'liveCommentText',
+    label: 'Auto-Pinned Comment Text (Optional)',
+    helpText: 'Text to automatically post and pin as a mod comment inside the live thread (e.g. Discord link)',
   },
   {
     type: 'paragraph',
