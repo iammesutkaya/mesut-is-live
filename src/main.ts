@@ -77,6 +77,18 @@ Devvit.addSettings([
   },
   {
     type: 'paragraph',
+    name: 'livePostBody',
+    label: 'Live Post Body (Markdown) (Optional)',
+    helpText: 'Custom markdown for the body of the live post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+  },
+  {
+    type: 'paragraph',
+    name: 'livePostFooter',
+    label: 'Live Post Custom Footer (Markdown) (Optional)',
+    helpText: 'Custom markdown to append at the bottom of the live post (works with both custom and default templates). Useful for adding Discord/social links or rules.',
+  },
+  {
+    type: 'paragraph',
     name: 'offlinePostBody',
     label: 'Offline Post Body (Markdown) (Optional)',
     helpText: 'Custom markdown for the body of the offline post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
@@ -107,8 +119,13 @@ Devvit.addSettings([
   }
 ]);
 
-// Helper to format a beautiful live stream status post body in markdown
-const formatLivePostBody = (streamInfo: any, channelName: string, youtubeUrl?: string): string => {
+const formatLivePostBody = (
+  streamInfo: any,
+  channelName: string,
+  youtubeUrl?: string,
+  customBody?: string,
+  footer?: string
+): string => {
   const title = streamInfo.title || 'Live Stream';
   const gameName = streamInfo.game_name || 'Just Chatting';
   const viewerCount = streamInfo.viewer_count !== undefined ? streamInfo.viewer_count.toLocaleString() : '0';
@@ -120,22 +137,33 @@ const formatLivePostBody = (streamInfo: any, channelName: string, youtubeUrl?: s
   const minutes = Math.floor((elapsedMs % 3600000) / 60000);
   const uptimeText = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
 
-  let body = `### 🔴 LIVE NOW: ${title}
+  const displayName = streamInfo.user_name || channelName;
 
-* **Category/Game:** ${gameName}
-* **Current Viewers:** ${viewerCount}
-* **Uptime:** live for ${uptimeText}
+  const content = customBody || `### 🔴 LIVE NOW: {title}\n\n* **Category/Game:** {game}\n* **Current Viewers:** {viewers}\n* **Uptime:** live for {uptime}\n\n---\n### 📺 Where to watch:\n* **Twitch:** [twitch.tv/{channel}](https://twitch.tv/{channel})\n* **YouTube:** [Watch on YouTube]({youtube_url})\n\n---\n*Stats are auto-updated in real-time by the subreddit bot.*`;
 
----
-### 📺 Where to watch:
-* **Twitch:** [twitch.tv/${channelName}](https://twitch.tv/${channelName})`;
+  let result = content
+    .replace(/{channel}/g, channelName)
+    .replace(/{display_name}/g, displayName)
+    .replace(/{game}/g, gameName)
+    .replace(/{viewers}/g, viewerCount)
+    .replace(/{uptime}/g, uptimeText)
+    .replace(/{title}/g, title);
 
   if (youtubeUrl) {
-    body += `\n* **YouTube:** [Watch on YouTube](${youtubeUrl})`;
+    result = result.replace(/{youtube_url}/g, youtubeUrl);
+  } else {
+    // Remove lines containing youtube_url placeholder if not configured
+    result = result
+      .split('\n')
+      .filter(line => !line.includes('{youtube_url}'))
+      .join('\n');
   }
 
-  body += `\n\n---\n*Stats are auto-updated in real-time by the subreddit bot.*`;
-  return body;
+  if (footer) {
+    result += `\n\n${footer}`;
+  }
+
+  return result;
 };
 
 const formatOfflinePostBody = (channelName: string, youtubeUrl?: string, customBody?: string, footer?: string): string => {
@@ -297,6 +325,8 @@ Devvit.addSchedulerJob({
     const deleteOfflinePost = await context.settings.get('deleteOfflinePost') as boolean | undefined;
     const stickyOfflinePost = await context.settings.get('stickyOfflinePost') as boolean | undefined;
     const updateSidebarWidget = await context.settings.get('updateSidebarWidget') as boolean | undefined;
+    const livePostBody = await context.settings.get('livePostBody') as string | undefined;
+    const livePostFooter = await context.settings.get('livePostFooter') as string | undefined;
     const offlinePostBody = await context.settings.get('offlinePostBody') as string | undefined;
     const offlinePostFooter = await context.settings.get('offlinePostFooter') as string | undefined;
     const offlineSidebarText = await context.settings.get('offlineSidebarText') as string | undefined;
@@ -377,7 +407,7 @@ Devvit.addSchedulerJob({
     const isCurrentlyPinned = await context.redis.get('is_live_pinned');
     
     if (isLive && streamInfo) {
-      const postBody = formatLivePostBody(streamInfo, channel as string, youtubeUrl);
+      const postBody = formatLivePostBody(streamInfo, channel as string, youtubeUrl, livePostBody, livePostFooter);
       const displayName = streamInfo.user_name || channel;
       const postTitle = `🚨${displayName} is LIVE!🚨 - ${streamInfo.title}`;
 
