@@ -70,19 +70,6 @@ Devvit.addSettings([
     helpText: 'Creates and automatically updates a "Stream Status" text widget in your subreddit sidebar.',
   },
   {
-    type: 'boolean',
-    name: 'enableHighlightsPost',
-    label: 'Enable Stream Highlights Post',
-    defaultValue: false,
-    helpText: 'Automatically posts a compilation of top Twitch clips generated during the stream when it ends.',
-  },
-  {
-    type: 'string',
-    name: 'highlightsFlairId',
-    label: 'Highlights Post Flair Template ID (Optional)',
-    helpText: 'The UUID of the flair template to apply to the stream highlights post (from Mod Tools -> Post Flair)',
-  },
-  {
     type: 'paragraph',
     name: 'offlinePostBody',
     label: 'Offline Post Body (Markdown) (Optional)',
@@ -135,6 +122,19 @@ Devvit.addSettings([
     name: 'liveSidebarFooter',
     label: 'Live Sidebar Widget Custom Footer (Markdown) (Optional)',
     helpText: 'Custom markdown to append at the bottom of the sidebar widget when the stream is live.',
+  },
+  {
+    type: 'boolean',
+    name: 'enableHighlightsPost',
+    label: 'Enable Stream Highlights Post',
+    defaultValue: false,
+    helpText: 'Automatically posts a compilation of top Twitch clips generated during the stream when it ends.',
+  },
+  {
+    type: 'string',
+    name: 'highlightsFlairId',
+    label: 'Highlights Post Flair Template ID (Optional)',
+    helpText: 'The UUID of the flair template to apply to the stream highlights post (from Mod Tools -> Post Flair)',
   }
 ]);
 
