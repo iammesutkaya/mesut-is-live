@@ -191,6 +191,24 @@ In your subreddit, click the **Mod Tools** menu and you will find two custom mod
 * **"Reset Twitch Stream Bot"**: Resets Redis state, recreates the 2-minute status checker, and initializes the bot state.
 * **"Get Default Bot Templates"**: Click this to immediately open a browser page with the copyable default templates for the settings inputs.
 
+## 🔑 How to Get Twitch Credentials
+
+To configure the bot, you need a **Twitch Client ID** and **Twitch Client Secret** so the bot can securely request live status updates from Twitch's API:
+
+1. Go to the [Twitch Developer Console](https://dev.twitch.tv/console) and log in with your Twitch account.
+2. Click **Register Your Application** (or navigate to **Applications** ➔ **Register Your Application**).
+3. Fill in the registration form:
+   * **Name**: Choose a unique name (e.g., `Subreddit-Stream-Notifier-Bot`).
+   * **OAuth Redirect URLs**: Enter `http://localhost` (a placeholder is fine; the bot uses the secure Client Credentials flow and does not need a redirect web page).
+   * **Category**: Select **Application Integration** or **Chat Bot**.
+4. Click **Create**.
+5. Find your newly created application and click **Manage**:
+   * Copy the **Client ID** and paste it into the bot settings.
+   * Click **New Secret** to generate a secret. Copy the **Client Secret** and paste it into the bot settings.
+
+> [!IMPORTANT]
+> Never share your Client Secret. Reddit securely encrypts this secret so it is never exposed to regular users or shown in plain text on the page once saved.
+
 ## 🔒 Fetch Domains
 
 This app requires permissions for the following external API domains configured in `devvit.json`:
