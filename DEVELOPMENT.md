@@ -1,6 +1,6 @@
-# 🛠️ Stream Status Notifier: Development Guide
+# 🛠️ LiveSticky: Development Guide
 
-This guide is for developers building, uploading, or modifying the "Mesut is Live" (Stream Status Notifier) bot on the Reddit Developer Platform (Devvit).
+This guide is for developers building, uploading, or modifying the "LiveSticky" bot on the Reddit Developer Platform (Devvit).
 
 ---
 

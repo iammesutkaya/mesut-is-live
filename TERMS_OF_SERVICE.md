@@ -1,8 +1,8 @@
-# Terms of Service for "Mesut is Live" Reddit Bot
+# Terms of Service for "LiveSticky" Reddit Bot
 
 **Effective Date:** May 17, 2026
 
-Please read these Terms of Service ("Terms") carefully before installing or using the "Mesut is Live" Reddit Bot ("the App" or "the Bot"), a Reddit application developed on the Reddit Developer Platform (Devvit).
+Please read these Terms of Service ("Terms") carefully before installing or using the "LiveSticky" Reddit Bot ("the App" or "the Bot"), a Reddit application developed on the Reddit Developer Platform (Devvit).
 
 By installing the App on a subreddit you moderate or interacting with the App, you agree to be bound by these Terms. If you do not agree, do not install or use the Bot.
 
@@ -10,7 +10,7 @@ By installing the App on a subreddit you moderate or interacting with the App, y
 
 ## 1. Description of Service
 
-The "Mesut is Live" Reddit Bot is a serverless application designed to automate stream announcements on Reddit:
+The "LiveSticky" Reddit Bot is a serverless application designed to automate stream announcements on Reddit:
 *   It periodically polls public Twitch API endpoints to check the stream status of a specified channel.
 *   When the stream goes live, it automatically creates a new post on the subreddit and pins (stickies) it to the top of the subreddit feed.
 *   When the stream goes offline, it automatically unpins and removes the post to keep the subreddit clean.

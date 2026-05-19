@@ -1,8 +1,8 @@
-# Privacy Policy for "Mesut is Live" Reddit Bot
+# Privacy Policy for "LiveSticky" Reddit Bot
 
 **Effective Date:** May 17, 2026
 
-This Privacy Policy explains how the "Mesut is Live" Reddit Bot (referred to as "the App" or "the Bot") handles information. The App is built on Reddit's Developer Platform (Devvit) and is designed to automatically monitor a designated Twitch channel and create/pin posts on a specified subreddit when the stream goes live, and unpin/remove the post when the stream goes offline.
+This Privacy Policy explains how the "LiveSticky" Reddit Bot (referred to as "the App" or "the Bot") handles information. The App is built on Reddit's Developer Platform (Devvit) and is designed to automatically monitor a designated Twitch channel and create/pin posts on a specified subreddit when the stream goes live, and unpin/remove the post when the stream goes offline.
 
 We are committed to protecting user privacy and ensuring transparency in all our data practices.
 
@@ -69,5 +69,5 @@ We may update this Privacy Policy from time to time to reflect changes in our pr
 
 ## 8. Contact Us
 
-If you have any questions, concerns, or requests regarding this Privacy Policy or the "Mesut is Live" Reddit Bot, please contact the developer:
+If you have any questions, concerns, or requests regarding this Privacy Policy or the "LiveSticky" Reddit Bot, please contact the developer:
 *   **Reddit:** [u/iammesutkaya](https://www.reddit.com/user/iammesutkaya)

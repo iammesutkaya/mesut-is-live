@@ -1,4 +1,4 @@
-# Mesut Is Live — Reddit Devvit Bot
+# LiveSticky — Reddit Devvit Bot
 
 An advanced, performant, and zero-maintenance stream notification bot for Reddit, designed exclusively for Twitch channels.
 
@@ -68,7 +68,7 @@ Includes a single-click moderator action in your subreddit mod tools to reset th
 
 ## ⚙️ Configuration Settings
 
-Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **mesut-is-live** ➔ **Settings**:
+Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **livesticky** ➔ **Settings**:
 
 ### 🛠️ Setup
 

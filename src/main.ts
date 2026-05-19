@@ -25,7 +25,7 @@ Devvit.addSettings([
         label: 'Twitch Client ID',
         isSecret: true,
         scope: SettingScope.App,
-        helpText: 'Your Twitch App Client ID. Register one at https://dev.twitch.tv/console (Guide: https://github.com/iammesutkaya/mesut-is-live#readme)',
+        helpText: 'Your Twitch App Client ID. Register one at https://dev.twitch.tv/console (Guide: https://github.com/iammesutkaya/livesticky#readme)',
       },
       {
         type: 'string',
@@ -33,7 +33,7 @@ Devvit.addSettings([
         label: 'Twitch Client Secret',
         isSecret: true,
         scope: SettingScope.App,
-        helpText: 'Your Twitch App Client Secret. Keep this confidential. (Guide: https://github.com/iammesutkaya/mesut-is-live#readme)',
+        helpText: 'Your Twitch App Client Secret. Keep this confidential. (Guide: https://github.com/iammesutkaya/livesticky#readme)',
       },
       {
         type: 'string',
@@ -85,7 +85,7 @@ Devvit.addSettings([
         type: 'paragraph',
         name: 'offlinePostBody',
         label: 'Offline Post Body (Markdown) (Optional)',
-        helpText: 'Custom markdown for the body of the offline post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+        helpText: 'Custom markdown for the body of the offline post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/livesticky#readme',
       },
       {
         type: 'paragraph',
@@ -97,7 +97,7 @@ Devvit.addSettings([
         type: 'paragraph',
         name: 'offlineSidebarText',
         label: 'Offline Sidebar Widget Text (Markdown) (Optional)',
-        helpText: 'Custom markdown for the body of the sidebar widget when the stream is offline. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+        helpText: 'Custom markdown for the body of the sidebar widget when the stream is offline. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/livesticky#readme',
       },
       {
         type: 'paragraph',
@@ -115,7 +115,7 @@ Devvit.addSettings([
         type: 'paragraph',
         name: 'livePostBody',
         label: 'Live Post Body (Markdown) (Optional)',
-        helpText: 'Custom markdown for the body of the live post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+        helpText: 'Custom markdown for the body of the live post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/livesticky#readme',
       },
       {
         type: 'paragraph',
@@ -133,7 +133,7 @@ Devvit.addSettings([
         type: 'paragraph',
         name: 'liveSidebarText',
         label: 'Live Sidebar Widget Text (Markdown) (Optional)',
-        helpText: 'Custom markdown for the body of the sidebar widget when the stream is live. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+        helpText: 'Custom markdown for the body of the sidebar widget when the stream is live. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/livesticky#readme',
       },
       {
         type: 'paragraph',
@@ -890,7 +890,7 @@ Devvit.addMenuItem({
   location: 'subreddit',
   forUserType: 'moderator',
   onPress: async (_, context) => {
-    context.ui.navigateTo('https://github.com/iammesutkaya/mesut-is-live#readme');
+    context.ui.navigateTo('https://github.com/iammesutkaya/livesticky#readme');
   },
 });
 
