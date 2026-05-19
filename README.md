@@ -1,6 +1,6 @@
 # Mesut Is Live — Reddit Devvit Bot
 
-An advanced, performant, and zero-maintenance stream notification bot for Reddit.
+An advanced, performant, and zero-maintenance stream notification bot for Reddit, designed exclusively for Twitch channels.
 
 [![Devvit Platform](https://img.shields.io/badge/Platform-Reddit%20Devvit-FF4500?style=for-the-badge&logo=reddit)](https://developers.reddit.com)
 [![Twitch Integration](https://img.shields.io/badge/Integration-Twitch%20Helix-9146FF?style=for-the-badge&logo=twitch)](https://dev.twitch.tv)
