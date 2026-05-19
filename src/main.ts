@@ -25,6 +25,7 @@ Devvit.addSettings([
         label: 'Twitch Client ID',
         isSecret: true,
         scope: SettingScope.App,
+        helpText: 'Your Twitch App Client ID. Register one at https://dev.twitch.tv/console (Guide: https://github.com/iammesutkaya/mesut-is-live#readme)',
       },
       {
         type: 'string',
@@ -32,6 +33,7 @@ Devvit.addSettings([
         label: 'Twitch Client Secret',
         isSecret: true,
         scope: SettingScope.App,
+        helpText: 'Your Twitch App Client Secret. Keep this confidential. (Guide: https://github.com/iammesutkaya/mesut-is-live#readme)',
       },
       {
         type: 'string',
