@@ -624,4 +624,14 @@ Devvit.addMenuItem({
   },
 });
 
+// Add a moderator menu item to quickly access the default settings templates
+Devvit.addMenuItem({
+  label: 'Get Default Bot Templates',
+  location: 'subreddit',
+  forUserType: 'moderator',
+  onPress: async (_, context) => {
+    context.ui.navigateTo('https://github.com/iammesutkaya/mesut-is-live#readme');
+  },
+});
+
 export default Devvit;

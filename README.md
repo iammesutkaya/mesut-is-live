@@ -128,10 +128,9 @@ npx devvit install
 ```
 
 ### 3. Initialize the Bot
-Go to your subreddit Mod Tools and click the **"Reset Twitch Stream Bot"** mod action. This will:
-- Clean up any legacy cron scheduler tasks.
-- Reset the Redis state.
-- Start the 2-minute active checker.
+In your subreddit, click the **Mod Tools** menu and you will find two custom moderator actions:
+* **"Reset Twitch Stream Bot"**: Resets Redis state, recreates the 2-minute status checker, and initializes the bot state.
+* **"Get Default Bot Templates"**: Click this to immediately open a browser page with the copyable default templates for the settings inputs.
 
 ---
 
