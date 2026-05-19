@@ -3,6 +3,9 @@
   "blocks": {
     "entry": "src/main.ts"
   },
+  "marketingAssets": {
+    "icon": "assets/icon.png"
+  },
   "permissions": {
     "http": {
       "enable": true,
