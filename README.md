@@ -72,14 +72,14 @@ Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **mesut-is-li
 | **Delete Post completely when Offline** | `Boolean` | Completely deletes the post and comments from Reddit when the stream ends. |
 | **Enable Sticky Offline Post** | `Boolean` | Recycles a single permanent stickied post when offline (`😴[DisplayName] is OFFLINE! CHECK OUT NEWS & USEFUL LINKS😴`) to prevent new-post notifications, automatically clearing/flushing old comments on each transition so the comment section starts fresh. |
 | **Enable Sidebar Widget** | `Boolean` | Creates and automatically updates a "STREAM STATUS" text widget in your subreddit sidebar reflecting the live/offline state, category, viewers, and uptime in real-time. |
-| **Live Post Body (Optional)** | `Paragraph` | Custom markdown for the body of the live post. If empty, the default template is used. You can use `{channel}`, `{display_name}`, `{game}`, `{viewers}`, `{uptime}`, `{title}`, and `{youtube_url}` as dynamic placeholders. |
-| **Live Post Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the live post (works with both custom and default templates). Useful for adding Discord/social links or rules. |
 | **Offline Post Body (Optional)** | `Paragraph` | Custom markdown for the body of the offline post. If empty, the default template is used. You can use `{channel}` and `{youtube_url}` as dynamic placeholders. |
 | **Offline Post Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the offline post (works with both custom and default templates). Useful for adding Discord/social links or rules. |
-| **Live Sidebar Widget Text (Optional)** | `Paragraph` | Custom markdown for the sidebar widget when the stream is live. If empty, the default template is used. You can use `{channel}`, `{display_name}`, `{game}`, `{viewers}`, `{uptime}`, `{title}`, and `{youtube_url}` as placeholders. |
-| **Live Sidebar Widget Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the sidebar widget when the stream is live. Perfect for adding Discord links, rules, etc. |
 | **Offline Sidebar Widget Text (Optional)** | `Paragraph` | Custom markdown for the sidebar widget when offline. If empty, the default template is used. You can use `{channel}`, `{display_name}`, and `{youtube_url}` as placeholders. |
 | **Offline Sidebar Widget Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the offline sidebar widget (works with both custom and default templates). Useful for adding Discord/social links or rules. |
+| **Live Post Body (Optional)** | `Paragraph` | Custom markdown for the body of the live post. If empty, the default template is used. You can use `{channel}`, `{display_name}`, `{game}`, `{viewers}`, `{uptime}`, `{title}`, and `{youtube_url}` as dynamic placeholders. |
+| **Live Post Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the live post (works with both custom and default templates). Useful for adding Discord/social links or rules. |
+| **Live Sidebar Widget Text (Optional)** | `Paragraph` | Custom markdown for the sidebar widget when the stream is live. If empty, the default template is used. You can use `{channel}`, `{display_name}`, `{game}`, `{viewers}`, `{uptime}`, `{title}`, and `{youtube_url}` as placeholders. |
+| **Live Sidebar Widget Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the sidebar widget when the stream is live. Perfect for adding Discord links, rules, etc. |
 
 ### 📝 Default Templates for Copy-Pasting
 

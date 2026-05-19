@@ -77,18 +77,6 @@ Devvit.addSettings([
   },
   {
     type: 'paragraph',
-    name: 'livePostBody',
-    label: 'Live Post Body (Markdown) (Optional)',
-    helpText: 'Custom markdown for the body of the live post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
-  },
-  {
-    type: 'paragraph',
-    name: 'livePostFooter',
-    label: 'Live Post Custom Footer (Markdown) (Optional)',
-    helpText: 'Custom markdown to append at the bottom of the live post (works with both custom and default templates). Useful for adding Discord/social links or rules.',
-  },
-  {
-    type: 'paragraph',
     name: 'offlinePostBody',
     label: 'Offline Post Body (Markdown) (Optional)',
     helpText: 'Custom markdown for the body of the offline post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
@@ -101,18 +89,6 @@ Devvit.addSettings([
   },
   {
     type: 'paragraph',
-    name: 'liveSidebarText',
-    label: 'Live Sidebar Widget Text (Markdown) (Optional)',
-    helpText: 'Custom markdown for the body of the sidebar widget when the stream is live. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
-  },
-  {
-    type: 'paragraph',
-    name: 'liveSidebarFooter',
-    label: 'Live Sidebar Widget Custom Footer (Markdown) (Optional)',
-    helpText: 'Custom markdown to append at the bottom of the sidebar widget when the stream is live.',
-  },
-  {
-    type: 'paragraph',
     name: 'offlineSidebarText',
     label: 'Offline Sidebar Widget Text (Markdown) (Optional)',
     helpText: 'Custom markdown for the body of the sidebar widget when the stream is offline. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
@@ -122,6 +98,30 @@ Devvit.addSettings([
     name: 'offlineSidebarFooter',
     label: 'Offline Sidebar Widget Custom Footer (Markdown) (Optional)',
     helpText: 'Custom markdown to append at the bottom of the offline sidebar widget (works with both custom and default templates). Useful for adding Discord/social links or rules.',
+  },
+  {
+    type: 'paragraph',
+    name: 'livePostBody',
+    label: 'Live Post Body (Markdown) (Optional)',
+    helpText: 'Custom markdown for the body of the live post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+  },
+  {
+    type: 'paragraph',
+    name: 'livePostFooter',
+    label: 'Live Post Custom Footer (Markdown) (Optional)',
+    helpText: 'Custom markdown to append at the bottom of the live post (works with both custom and default templates). Useful for adding Discord/social links or rules.',
+  },
+  {
+    type: 'paragraph',
+    name: 'liveSidebarText',
+    label: 'Live Sidebar Widget Text (Markdown) (Optional)',
+    helpText: 'Custom markdown for the body of the sidebar widget when the stream is live. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+  },
+  {
+    type: 'paragraph',
+    name: 'liveSidebarFooter',
+    label: 'Live Sidebar Widget Custom Footer (Markdown) (Optional)',
+    helpText: 'Custom markdown to append at the bottom of the sidebar widget when the stream is live.',
   }
 ]);
 
