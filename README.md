@@ -76,9 +76,10 @@ Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **mesut-is-li
 | **Live Post Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the live post (works with both custom and default templates). Useful for adding Discord/social links or rules. |
 | **Offline Post Body (Optional)** | `Paragraph` | Custom markdown for the body of the offline post. If empty, the default template is used. You can use `{channel}` and `{youtube_url}` as dynamic placeholders. |
 | **Offline Post Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the offline post (works with both custom and default templates). Useful for adding Discord/social links or rules. |
+| **Live Sidebar Widget Text (Optional)** | `Paragraph` | Custom markdown for the sidebar widget when the stream is live. If empty, the default template is used. You can use `{channel}`, `{display_name}`, `{game}`, `{viewers}`, `{uptime}`, `{title}`, and `{youtube_url}` as placeholders. |
+| **Live Sidebar Widget Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the sidebar widget when the stream is live. Perfect for adding Discord links, rules, etc. |
 | **Offline Sidebar Widget Text (Optional)** | `Paragraph` | Custom markdown for the sidebar widget when offline. If empty, the default template is used. You can use `{channel}`, `{display_name}`, and `{youtube_url}` as placeholders. |
 | **Offline Sidebar Widget Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the offline sidebar widget (works with both custom and default templates). Useful for adding Discord/social links or rules. |
-| **Live Sidebar Widget Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the sidebar widget when the stream is live. Perfect for adding Discord links, rules, etc. |
 
 ### 📝 Default Templates for Copy-Pasting
 
@@ -124,6 +125,22 @@ The stream is currently offline. Follow the channels below to get notified when 
 
 ---
 *Stats are auto-updated in real-time by the subreddit bot.*
+```
+
+#### 4. Default Live Sidebar Widget Text:
+```markdown
+# 🚨 {display_name} is LIVE! 🚨
+
+* **Game:** {game}
+* **Viewers:** {viewers}
+* **Uptime:** live for {uptime}
+
+**Title:**
+{title}
+
+[**👉 Watch Live on Twitch**](https://twitch.tv/{channel})
+
+[**📺 Watch on YouTube**]({youtube_url})
 ```
 
 ## 🚀 How to Deploy and Install
