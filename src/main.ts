@@ -83,9 +83,21 @@ Devvit.addSettings([
   },
   {
     type: 'paragraph',
+    name: 'offlinePostFooter',
+    label: 'Offline Post Custom Footer (Markdown) (Optional)',
+    helpText: 'Custom markdown to append at the bottom of the offline post (works with both custom and default templates). Useful for adding Discord/social links or rules.',
+  },
+  {
+    type: 'paragraph',
     name: 'offlineSidebarText',
     label: 'Offline Sidebar Widget Text (Markdown) (Optional)',
     helpText: 'Custom markdown for the body of the sidebar widget when the stream is offline. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+  },
+  {
+    type: 'paragraph',
+    name: 'offlineSidebarFooter',
+    label: 'Offline Sidebar Widget Custom Footer (Markdown) (Optional)',
+    helpText: 'Custom markdown to append at the bottom of the offline sidebar widget (works with both custom and default templates). Useful for adding Discord/social links or rules.',
   },
   {
     type: 'paragraph',
@@ -126,8 +138,7 @@ const formatLivePostBody = (streamInfo: any, channelName: string, youtubeUrl?: s
   return body;
 };
 
-// Helper to format a concluding offline post body in markdown
-const formatOfflinePostBody = (channelName: string, youtubeUrl?: string, customBody?: string): string => {
+const formatOfflinePostBody = (channelName: string, youtubeUrl?: string, customBody?: string, footer?: string): string => {
   const content = customBody || `### 😴 STREAM OFFLINE\n\nThe stream has ended. Thank you for watching! \n\n---\n### 📺 Channels:\n* **Twitch:** [twitch.tv/{channel}](https://twitch.tv/{channel})\n* **YouTube:** [Watch VODs on YouTube]({youtube_url})\n\n---\n*This live thread has concluded. VODs and highlights may be available on the links above.*`;
 
   let result = content.replace(/{channel}/g, channelName);
@@ -140,10 +151,14 @@ const formatOfflinePostBody = (channelName: string, youtubeUrl?: string, customB
       .filter(line => !line.includes('{youtube_url}'))
       .join('\n');
   }
+
+  if (footer) {
+    result += `\n\n${footer}`;
+  }
+
   return result;
 };
 
-// Helper to format a beautiful sidebar widget markdown
 const formatSidebarWidgetText = (
   isLive: boolean,
   streamInfo: any,
@@ -151,7 +166,8 @@ const formatSidebarWidgetText = (
   channelName: string,
   youtubeUrl?: string,
   customOfflineText?: string,
-  liveFooter?: string
+  liveFooter?: string,
+  offlineFooter?: string
 ): string => {
   if (isLive && streamInfo) {
     const title = streamInfo.title || 'Live Stream';
@@ -200,6 +216,10 @@ const formatSidebarWidgetText = (
         .filter(line => !line.includes('{youtube_url}'))
         .join('\n');
     }
+
+    if (offlineFooter) {
+      result += `\n\n${offlineFooter}`;
+    }
     return result;
   }
 };
@@ -209,7 +229,8 @@ const ensureStickyOfflinePost = async (context: any, channel: string, youtubeUrl
   const cachedDisplayName = await context.redis.get('twitch_display_name');
   const displayName = cachedDisplayName || channel;
   const customOfflineBody = await context.settings.get('offlinePostBody') as string | undefined;
-  const concludingBody = formatOfflinePostBody(channel, youtubeUrl, customOfflineBody);
+  const offlinePostFooter = await context.settings.get('offlinePostFooter') as string | undefined;
+  const concludingBody = formatOfflinePostBody(channel, youtubeUrl, customOfflineBody, offlinePostFooter);
   const offlinePostTitle = `😴${displayName} is OFFLINE! CHECK OUT NEWS & USEFUL LINKS😴`;
   const offlinePostId = await context.redis.get('offline_post_id');
   let offlinePostExists = false;
@@ -277,7 +298,9 @@ Devvit.addSchedulerJob({
     const stickyOfflinePost = await context.settings.get('stickyOfflinePost') as boolean | undefined;
     const updateSidebarWidget = await context.settings.get('updateSidebarWidget') as boolean | undefined;
     const offlinePostBody = await context.settings.get('offlinePostBody') as string | undefined;
+    const offlinePostFooter = await context.settings.get('offlinePostFooter') as string | undefined;
     const offlineSidebarText = await context.settings.get('offlineSidebarText') as string | undefined;
+    const offlineSidebarFooter = await context.settings.get('offlineSidebarFooter') as string | undefined;
     const liveSidebarFooter = await context.settings.get('liveSidebarFooter') as string | undefined;
     
     if (!channel || !clientId || !secret) {
@@ -485,7 +508,7 @@ Devvit.addSchedulerJob({
               } else {
                 // Update post body with a concluding offline conclusion message
                 try {
-                  const concludingBody = formatOfflinePostBody(channel as string, youtubeUrl, offlinePostBody);
+                  const concludingBody = formatOfflinePostBody(channel as string, youtubeUrl, offlinePostBody, offlinePostFooter);
                   await post.edit({ text: concludingBody });
                   console.log(`Successfully updated concluding body for post: ${postId}`);
                 } catch (editError) {
@@ -530,7 +553,8 @@ Devvit.addSchedulerJob({
           channel as string,
           youtubeUrl,
           offlineSidebarText,
-          liveSidebarFooter
+          liveSidebarFooter,
+          offlineSidebarFooter
         );
         
         const currentSubredditName = await context.reddit.getCurrentSubredditName();
