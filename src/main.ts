@@ -101,6 +101,18 @@ Devvit.addSettings([
   },
   {
     type: 'paragraph',
+    name: 'liveSidebarText',
+    label: 'Live Sidebar Widget Text (Markdown) (Optional)',
+    helpText: 'Custom markdown for the body of the sidebar widget when the stream is live. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+  },
+  {
+    type: 'paragraph',
+    name: 'liveSidebarFooter',
+    label: 'Live Sidebar Widget Custom Footer (Markdown) (Optional)',
+    helpText: 'Custom markdown to append at the bottom of the sidebar widget when the stream is live.',
+  },
+  {
+    type: 'paragraph',
     name: 'offlineSidebarText',
     label: 'Offline Sidebar Widget Text (Markdown) (Optional)',
     helpText: 'Custom markdown for the body of the sidebar widget when the stream is offline. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
@@ -110,12 +122,6 @@ Devvit.addSettings([
     name: 'offlineSidebarFooter',
     label: 'Offline Sidebar Widget Custom Footer (Markdown) (Optional)',
     helpText: 'Custom markdown to append at the bottom of the offline sidebar widget (works with both custom and default templates). Useful for adding Discord/social links or rules.',
-  },
-  {
-    type: 'paragraph',
-    name: 'liveSidebarFooter',
-    label: 'Live Sidebar Widget Custom Footer (Markdown) (Optional)',
-    helpText: 'Custom markdown to append at the bottom of the sidebar widget when the stream is live.',
   }
 ]);
 
@@ -193,6 +199,7 @@ const formatSidebarWidgetText = (
   displayName: string,
   channelName: string,
   youtubeUrl?: string,
+  customLiveText?: string,
   customOfflineText?: string,
   liveFooter?: string,
   offlineFooter?: string
@@ -200,7 +207,7 @@ const formatSidebarWidgetText = (
   if (isLive && streamInfo) {
     const title = streamInfo.title || 'Live Stream';
     const gameName = streamInfo.game_name || 'Just Chatting';
-    const viewerCount = streamInfo.viewer_count !== undefined ? streamInfo.viewer_count : 0;
+    const viewerCount = streamInfo.viewer_count !== undefined ? streamInfo.viewer_count.toLocaleString() : '0';
     
     let uptimeStr = '';
     if (streamInfo.started_at) {
@@ -211,23 +218,30 @@ const formatSidebarWidgetText = (
       uptimeStr = diffHrs > 0 ? `${diffHrs}h ${diffMins}m` : `${diffMins}m`;
     }
 
-    let text = `# 🚨 ${displayName} is LIVE! 🚨\n\n`;
-    text += `* **Game:** ${gameName}\n`;
-    text += `* **Viewers:** ${viewerCount.toLocaleString()}\n`;
-    if (uptimeStr) {
-      text += `* **Uptime:** live for ${uptimeStr}\n`;
-    }
-    text += `\n**Title:**\n${title}\n\n`;
-    text += `[**👉 Watch Live on Twitch**](https://twitch.tv/${channelName})`;
-    
+    const content = customLiveText || `# 🚨 {display_name} is LIVE! 🚨\n\n* **Game:** {game}\n* **Viewers:** {viewers}\n* **Uptime:** live for {uptime}\n\n**Title:**\n{title}\n\n[**👉 Watch Live on Twitch**](https://twitch.tv/{channel})\n\n[**📺 Watch on YouTube**]({youtube_url})`;
+
+    let result = content
+      .replace(/{channel}/g, channelName)
+      .replace(/{display_name}/g, displayName)
+      .replace(/{game}/g, gameName)
+      .replace(/{viewers}/g, viewerCount)
+      .replace(/{uptime}/g, uptimeStr)
+      .replace(/{title}/g, title);
+
     if (youtubeUrl) {
-      text += `\n\n[**📺 Watch on YouTube**](${youtubeUrl})`;
+      result = result.replace(/{youtube_url}/g, youtubeUrl);
+    } else {
+      // Remove lines containing youtube_url placeholder if not configured
+      result = result
+        .split('\n')
+        .filter(line => !line.includes('{youtube_url}'))
+        .join('\n');
     }
-    
+
     if (liveFooter) {
-      text += `\n\n${liveFooter}`;
+      result += `\n\n${liveFooter}`;
     }
-    return text;
+    return result;
   } else {
     const content = customOfflineText || `# 😴 {display_name} is OFFLINE 😴\n\nThe stream is currently offline. Follow the channels below to get notified when we go live!\n\n* [**Twitch Channel**](https://twitch.tv/{channel})\n* [**YouTube Channel**]({youtube_url})`;
 
@@ -329,9 +343,10 @@ Devvit.addSchedulerJob({
     const livePostFooter = await context.settings.get('livePostFooter') as string | undefined;
     const offlinePostBody = await context.settings.get('offlinePostBody') as string | undefined;
     const offlinePostFooter = await context.settings.get('offlinePostFooter') as string | undefined;
+    const liveSidebarText = await context.settings.get('liveSidebarText') as string | undefined;
+    const liveSidebarFooter = await context.settings.get('liveSidebarFooter') as string | undefined;
     const offlineSidebarText = await context.settings.get('offlineSidebarText') as string | undefined;
     const offlineSidebarFooter = await context.settings.get('offlineSidebarFooter') as string | undefined;
-    const liveSidebarFooter = await context.settings.get('liveSidebarFooter') as string | undefined;
     
     if (!channel || !clientId || !secret) {
       console.log(`Missing Twitch configuration - Channel: ${!!channel}, ClientID: ${!!clientId}, Secret: ${!!secret}`);
@@ -582,6 +597,7 @@ Devvit.addSchedulerJob({
           displayName as string,
           channel as string,
           youtubeUrl,
+          liveSidebarText,
           offlineSidebarText,
           liveSidebarFooter,
           offlineSidebarFooter
