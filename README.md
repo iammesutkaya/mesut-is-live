@@ -9,10 +9,7 @@ An advanced, performant, and zero-maintenance stream notification bot for Reddit
 
 This bot automatically monitors a specified Twitch stream, creates and flairs a dedicated live discussion thread when the stream goes live, updates the stats (viewers, uptime, category) in real-time every 2 minutes, auto-pins a customizable moderator comment, and unpins/concludes the thread with VOD archives when the stream goes offline.
 
----
-
 ## ✨ Core Features
----
 
 **🔴 Automatic Live Threads**  
 Periodically polls your Twitch stream (every 2 minutes) and posts a beautifully stickied live discussion thread when you go live.
@@ -60,7 +57,6 @@ Includes a single-click moderator action in your subreddit mod tools to reset th
 ---
 
 ## ⚙️ Configuration Settings
----
 
 Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **mesut-is-live** ➔ **Settings**:
 
@@ -79,7 +75,6 @@ Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **mesut-is-li
 | **Offline Post Body (Optional)** | `Paragraph` | Custom markdown for the body of the offline post. If empty, the default template is used. You can use `{channel}` and `{youtube_url}` as dynamic placeholders. |
 | **Offline Sidebar Widget Text (Optional)** | `Paragraph` | Custom markdown for the sidebar widget when offline. If empty, the default template is used. You can use `{channel}`, `{display_name}`, and `{youtube_url}` as placeholders. |
 | **Live Sidebar Widget Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the sidebar widget when the stream is live. Perfect for adding Discord links, rules, etc. |
----
 
 ### 📝 Default Templates for Copy-Pasting
 
@@ -110,10 +105,7 @@ The stream is currently offline. Follow the channels below to get notified when 
 * [**YouTube Channel**]({youtube_url})
 ```
 
----
-
 ## 🚀 How to Deploy and Install
----
 
 ### 1. Build and Upload
 Upload the latest build to the Reddit Developer Platform:
@@ -132,14 +124,10 @@ In your subreddit, click the **Mod Tools** menu and you will find two custom mod
 * **"Reset Twitch Stream Bot"**: Resets Redis state, recreates the 2-minute status checker, and initializes the bot state.
 * **"Get Default Bot Templates"**: Click this to immediately open a browser page with the copyable default templates for the settings inputs.
 
----
-
 ## 🔒 Fetch Domains
----
 
 This app requires permissions for the following external API domains configured in `devvit.json`:
 - `id.twitch.tv` — Authenticates the app using Twitch Client Credentials.
 - `api.twitch.tv` — Periodically polls the stream status (Helix API).
 
----
 *Created with ❤️ for the community.*
