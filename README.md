@@ -200,7 +200,7 @@ This app requires permissions for the following external API domains configured 
 ## 👨‍💻 Author & Credits
 
 *   **Developer:** Created by [u/iammesutkaya](https://reddit.com/u/iammesutkaya)
-*   **Twitch:** Follow the live channel at [twitch.tv/mesut](https://twitch.tv/mesut)
+*   **Twitch:** Follow the live channel at [twitch.tv/mesutkaya](https://twitch.tv/mesutkaya)
 *   **GitHub:** Source code and contributions are available on [GitHub](https://github.com/iammesutkaya/mesut-is-live)
 
 *Created with ❤️ for the community.*
