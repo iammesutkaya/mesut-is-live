@@ -197,4 +197,10 @@ This app requires permissions for the following external API domains configured 
 - `id.twitch.tv` — Authenticates the app using Twitch Client Credentials.
 - `api.twitch.tv` — Periodically polls the stream status (Helix API).
 
+## 👨‍💻 Author & Credits
+
+*   **Developer:** Created by [u/iammesutkaya](https://reddit.com/u/iammesutkaya)
+*   **Twitch:** Follow the live channel at [twitch.tv/mesut](https://twitch.tv/mesut)
+*   **GitHub:** Source code and contributions are available on [GitHub](https://github.com/iammesutkaya/mesut-is-live)
+
 *Created with ❤️ for the community.*
