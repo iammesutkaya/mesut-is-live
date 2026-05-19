@@ -10,131 +10,155 @@ Devvit.configure({
 // Define the configuration settings for the subreddit
 Devvit.addSettings([
   {
-    type: 'string',
-    name: 'twitchChannel',
-    label: 'Twitch Channel Name',
-    helpText: 'The name of the Twitch channel to monitor (e.g., ninja)',
+    type: 'group',
+    label: 'Setup',
+    fields: [
+      {
+        type: 'string',
+        name: 'twitchChannel',
+        label: 'Twitch Channel Name',
+        helpText: 'The name of the Twitch channel to monitor (e.g., ninja)',
+      },
+      {
+        type: 'string',
+        name: 'twitchClientId',
+        label: 'Twitch Client ID',
+        isSecret: true,
+        scope: SettingScope.App,
+      },
+      {
+        type: 'string',
+        name: 'twitchClientSecret',
+        label: 'Twitch Client Secret',
+        isSecret: true,
+        scope: SettingScope.App,
+      },
+      {
+        type: 'string',
+        name: 'youtubeUrl',
+        label: 'YouTube Channel/Live URL (Optional)',
+        helpText: 'The full URL of your YouTube channel or live stream (e.g., https://youtube.com/c/mesut/live)',
+      },
+      {
+        type: 'string',
+        name: 'liveFlairId',
+        label: 'Live Post Flair Template ID (Optional)',
+        helpText: 'The UUID of the flair template to apply to the live post (from Mod Tools -> Post Flair)',
+      }
+    ]
   },
   {
-    type: 'string',
-    name: 'twitchClientId',
-    label: 'Twitch Client ID',
-    isSecret: true,
-    scope: SettingScope.App,
+    type: 'group',
+    label: 'Offline Stage',
+    fields: [
+      {
+        type: 'boolean',
+        name: 'removeOfflinePost',
+        label: 'Remove Post from Feed when Offline',
+        defaultValue: false,
+        helpText: 'Moderator action: Hides the post from the main subreddit listing when offline. It remains accessible via direct link/comment history, but won\'t flood the feed.',
+      },
+      {
+        type: 'boolean',
+        name: 'deleteOfflinePost',
+        label: 'Delete Post completely when Offline',
+        defaultValue: false,
+        helpText: 'Deletes the post and all its comments completely from Reddit when the stream ends.',
+      },
+      {
+        type: 'boolean',
+        name: 'stickyOfflinePost',
+        label: 'Enable Sticky Offline Post',
+        defaultValue: true,
+        helpText: 'Recycles a single permanent stickied post when offline to announce news and useful links. The post is unstickied when live and restickied when offline. Because it is recycled, users are never notified of a new post after creation.',
+      },
+      {
+        type: 'boolean',
+        name: 'updateSidebarWidget',
+        label: 'Enable Sidebar Widget',
+        defaultValue: false,
+        helpText: 'Creates and automatically updates a "Stream Status" text widget in your subreddit sidebar.',
+      },
+      {
+        type: 'paragraph',
+        name: 'offlinePostBody',
+        label: 'Offline Post Body (Markdown) (Optional)',
+        helpText: 'Custom markdown for the body of the offline post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+      },
+      {
+        type: 'paragraph',
+        name: 'offlinePostFooter',
+        label: 'Offline Post Custom Footer (Markdown) (Optional)',
+        helpText: 'Custom markdown to append at the bottom of the offline post (works with both custom and default templates). Useful for adding Discord/social links or rules.',
+      },
+      {
+        type: 'paragraph',
+        name: 'offlineSidebarText',
+        label: 'Offline Sidebar Widget Text (Markdown) (Optional)',
+        helpText: 'Custom markdown for the body of the sidebar widget when the stream is offline. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+      },
+      {
+        type: 'paragraph',
+        name: 'offlineSidebarFooter',
+        label: 'Offline Sidebar Widget Custom Footer (Markdown) (Optional)',
+        helpText: 'Custom markdown to append at the bottom of the offline sidebar widget (works with both custom and default templates). Useful for adding Discord/social links or rules.',
+      }
+    ]
   },
   {
-    type: 'string',
-    name: 'twitchClientSecret',
-    label: 'Twitch Client Secret',
-    isSecret: true,
-    scope: SettingScope.App,
+    type: 'group',
+    label: 'Live Stage',
+    fields: [
+      {
+        type: 'paragraph',
+        name: 'livePostBody',
+        label: 'Live Post Body (Markdown) (Optional)',
+        helpText: 'Custom markdown for the body of the live post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+      },
+      {
+        type: 'paragraph',
+        name: 'livePostFooter',
+        label: 'Live Post Custom Footer (Markdown) (Optional)',
+        helpText: 'Custom markdown to append at the bottom of the live post (works with both custom and default templates). Useful for adding Discord/social links or rules.',
+      },
+      {
+        type: 'paragraph',
+        name: 'liveCommentText',
+        label: 'Auto-Pinned Comment Text (Optional)',
+        helpText: 'Text to automatically post and pin as a mod comment inside the live thread (e.g. Discord link)',
+      },
+      {
+        type: 'paragraph',
+        name: 'liveSidebarText',
+        label: 'Live Sidebar Widget Text (Markdown) (Optional)',
+        helpText: 'Custom markdown for the body of the sidebar widget when the stream is live. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
+      },
+      {
+        type: 'paragraph',
+        name: 'liveSidebarFooter',
+        label: 'Live Sidebar Widget Custom Footer (Markdown) (Optional)',
+        helpText: 'Custom markdown to append at the bottom of the sidebar widget when the stream is live.',
+      }
+    ]
   },
   {
-    type: 'string',
-    name: 'youtubeUrl',
-    label: 'YouTube Channel/Live URL (Optional)',
-    helpText: 'The full URL of your YouTube channel or live stream (e.g., https://youtube.com/c/mesut/live)',
-  },
-  {
-    type: 'string',
-    name: 'liveFlairId',
-    label: 'Live Post Flair Template ID (Optional)',
-    helpText: 'The UUID of the flair template to apply to the live post (from Mod Tools -> Post Flair)',
-  },
-  {
-    type: 'boolean',
-    name: 'removeOfflinePost',
-    label: 'Remove Post from Feed when Offline',
-    defaultValue: false,
-    helpText: 'Moderator action: Hides the post from the main subreddit listing when offline. It remains accessible via direct link/comment history, but won\'t flood the feed.',
-  },
-  {
-    type: 'boolean',
-    name: 'deleteOfflinePost',
-    label: 'Delete Post completely when Offline',
-    defaultValue: false,
-    helpText: 'Deletes the post and all its comments completely from Reddit when the stream ends.',
-  },
-  {
-    type: 'boolean',
-    name: 'stickyOfflinePost',
-    label: 'Enable Sticky Offline Post',
-    defaultValue: true,
-    helpText: 'Recycles a single permanent stickied post when offline to announce news and useful links. The post is unstickied when live and restickied when offline. Because it is recycled, users are never notified of a new post after creation.',
-  },
-  {
-    type: 'boolean',
-    name: 'updateSidebarWidget',
-    label: 'Enable Sidebar Widget',
-    defaultValue: false,
-    helpText: 'Creates and automatically updates a "Stream Status" text widget in your subreddit sidebar.',
-  },
-  {
-    type: 'paragraph',
-    name: 'offlinePostBody',
-    label: 'Offline Post Body (Markdown) (Optional)',
-    helpText: 'Custom markdown for the body of the offline post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
-  },
-  {
-    type: 'paragraph',
-    name: 'offlinePostFooter',
-    label: 'Offline Post Custom Footer (Markdown) (Optional)',
-    helpText: 'Custom markdown to append at the bottom of the offline post (works with both custom and default templates). Useful for adding Discord/social links or rules.',
-  },
-  {
-    type: 'paragraph',
-    name: 'offlineSidebarText',
-    label: 'Offline Sidebar Widget Text (Markdown) (Optional)',
-    helpText: 'Custom markdown for the body of the sidebar widget when the stream is offline. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
-  },
-  {
-    type: 'paragraph',
-    name: 'offlineSidebarFooter',
-    label: 'Offline Sidebar Widget Custom Footer (Markdown) (Optional)',
-    helpText: 'Custom markdown to append at the bottom of the offline sidebar widget (works with both custom and default templates). Useful for adding Discord/social links or rules.',
-  },
-  {
-    type: 'paragraph',
-    name: 'livePostBody',
-    label: 'Live Post Body (Markdown) (Optional)',
-    helpText: 'Custom markdown for the body of the live post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
-  },
-  {
-    type: 'paragraph',
-    name: 'livePostFooter',
-    label: 'Live Post Custom Footer (Markdown) (Optional)',
-    helpText: 'Custom markdown to append at the bottom of the live post (works with both custom and default templates). Useful for adding Discord/social links or rules.',
-  },
-  {
-    type: 'paragraph',
-    name: 'liveCommentText',
-    label: 'Auto-Pinned Comment Text (Optional)',
-    helpText: 'Text to automatically post and pin as a mod comment inside the live thread (e.g. Discord link)',
-  },
-  {
-    type: 'paragraph',
-    name: 'liveSidebarText',
-    label: 'Live Sidebar Widget Text (Markdown) (Optional)',
-    helpText: 'Custom markdown for the body of the sidebar widget when the stream is live. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/mesut-is-live#readme',
-  },
-  {
-    type: 'paragraph',
-    name: 'liveSidebarFooter',
-    label: 'Live Sidebar Widget Custom Footer (Markdown) (Optional)',
-    helpText: 'Custom markdown to append at the bottom of the sidebar widget when the stream is live.',
-  },
-  {
-    type: 'boolean',
-    name: 'enableHighlightsPost',
-    label: 'Enable Stream Highlights Post',
-    defaultValue: false,
-    helpText: 'Automatically posts a compilation of top Twitch clips generated during the stream when it ends.',
-  },
-  {
-    type: 'string',
-    name: 'highlightsFlairId',
-    label: 'Highlights Post Flair Template ID (Optional)',
-    helpText: 'The UUID of the flair template to apply to the stream highlights post (from Mod Tools -> Post Flair)',
+    type: 'group',
+    label: 'Post-Stream Stage',
+    fields: [
+      {
+        type: 'boolean',
+        name: 'enableHighlightsPost',
+        label: 'Enable Stream Highlights Post',
+        defaultValue: false,
+        helpText: 'Automatically posts a compilation of top Twitch clips generated during the stream when it ends.',
+      },
+      {
+        type: 'string',
+        name: 'highlightsFlairId',
+        label: 'Highlights Post Flair Template ID (Optional)',
+        helpText: 'The UUID of the flair template to apply to the stream highlights post (from Mod Tools -> Post Flair)',
+      }
+    ]
   }
 ]);
 
