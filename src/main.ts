@@ -182,7 +182,7 @@ const formatLivePostBody = (
 
   const displayName = streamInfo.user_name || channelName;
 
-  const content = customBody || `### 🔴 LIVE NOW: {title}\n\n* **Category/Game:** {game}\n* **Current Viewers:** {viewers}\n* **Uptime:** live for {uptime}\n\n---\n### 📺 Where to watch:\n* **Twitch:** [twitch.tv/{channel}](https://twitch.tv/{channel})\n* **YouTube:** [Watch on YouTube]({youtube_url})\n\n---\n*Stats are auto-updated in real-time by [Mesut is Live](https://developers.reddit.com/apps/mesut-is-live) built by [u/iammesutkaya](https://reddit.com/u/iammesutkaya).*`;
+  const content = customBody || `### 🔴 LIVE NOW: {title}\n\n* **Category/Game:** {game}\n* **Current Viewers:** {viewers}\n* **Uptime:** live for {uptime}\n\n---\n### 📺 Where to watch:\n* **Twitch:** [twitch.tv/{channel}](https://twitch.tv/{channel})\n* **YouTube:** [Watch on YouTube]({youtube_url})\n\n---\n*Stats are auto-updated in real-time by the subreddit bot.*`;
 
   let result = content
     .replace(/{channel}/g, channelName)
@@ -210,7 +210,7 @@ const formatLivePostBody = (
 };
 
 const formatOfflinePostBody = (channelName: string, youtubeUrl?: string, customBody?: string, footer?: string): string => {
-  const content = customBody || `### 😴 STREAM OFFLINE\n\nThe stream has ended. Thank you for watching! \n\n---\n### 📺 Channels:\n* **Twitch:** [twitch.tv/{channel}](https://twitch.tv/{channel})\n* **YouTube:** [Watch VODs on YouTube]({youtube_url})\n\n---\n*This live thread has concluded. VODs and highlights may be available on the links above. Powered by [Mesut is Live](https://developers.reddit.com/apps/mesut-is-live) built by [u/iammesutkaya](https://reddit.com/u/iammesutkaya).*`;
+  const content = customBody || `### 😴 STREAM OFFLINE\n\nThe stream has ended. Thank you for watching! \n\n---\n### 📺 Channels:\n* **Twitch:** [twitch.tv/{channel}](https://twitch.tv/{channel})\n* **YouTube:** [Watch VODs on YouTube]({youtube_url})\n\n---\n*This live thread has concluded. VODs and highlights may be available on the links above.*`;
 
   let result = content.replace(/{channel}/g, channelName);
   if (youtubeUrl) {
