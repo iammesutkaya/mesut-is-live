@@ -1,6 +1,6 @@
-# 🛠️ StickyStream: Development Guide
+# 🛠️ LiveSticky: Development Guide
 
-This guide is for developers building, uploading, or modifying the "StickyStream" bot on the Reddit Developer Platform (Devvit).
+This guide is for developers building, uploading, or modifying the "LiveSticky" bot on the Reddit Developer Platform (Devvit).
 
 ---
 

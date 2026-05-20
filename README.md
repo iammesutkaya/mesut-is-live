@@ -1,4 +1,4 @@
-# StickyStream — Reddit Devvit Bot
+# LiveSticky — Reddit Devvit Bot
 
 An advanced, performant, and zero-maintenance stream notification bot for Reddit, designed exclusively for Twitch channels.
 
@@ -68,7 +68,7 @@ Includes a single-click moderator action in your subreddit mod tools to reset th
 
 ## ⚙️ Configuration Settings
 
-Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **stickystream** ➔ **Settings**:
+Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **live-sticky** ➔ **Settings**:
 
 ### 🛠️ Setup
 

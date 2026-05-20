@@ -1,5 +1,5 @@
 {
-  "name": "stickystream",
+  "name": "live-sticky",
   "blocks": {
     "entry": "src/main.ts"
   },
@@ -14,5 +14,8 @@
         "api.twitch.tv"
       ]
     }
+  },
+  "dev": {
+    "subreddit": "stickystream_dev"
   }
 }
