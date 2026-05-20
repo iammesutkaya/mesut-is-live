@@ -28,5 +28,5 @@ In your subreddit, click the **Mod Tools** menu and you will find two custom mod
 ## 🔒 Fetch Domains
 
 This app requires permissions for the following external API domains configured in `devvit.json`:
-* `id.twitch.tv` — Authenticates the app using Twitch Client Credentials.
-* `api.twitch.tv` — Periodically polls the stream status (Helix API) and fetches clips for the highlights post.
+* `id.twitch.tv` - Authenticates the app using Twitch Client Credentials.
+* `api.twitch.tv` - Periodically polls the stream status (Helix API) and fetches clips for the highlights post.
