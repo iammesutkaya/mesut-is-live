@@ -1,4 +1,4 @@
-# LiveSticky — Reddit Devvit Bot
+# LiveSticky - Reddit Devvit Bot
 
 An advanced, performant, and zero-maintenance stream notification bot for Reddit, designed exclusively for Twitch channels.
 
