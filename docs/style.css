@@ -108,7 +108,7 @@ header {
   width: 56px;
   height: 56px;
   border-radius: 14px;
-  background: var(--gradient-glow);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
