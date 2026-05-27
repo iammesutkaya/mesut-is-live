@@ -164,8 +164,8 @@ h1 {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   padding: 48px;
-  backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   position: relative;
   overflow: hidden;
   transition: var(--transition-smooth);
@@ -351,6 +351,7 @@ footer {
   border-top: 1px solid var(--card-border);
   margin-top: auto;
   background: rgba(11, 15, 25, 0.8);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
 }
 
