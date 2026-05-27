@@ -50,7 +50,7 @@ body {
 /* Animated Background Glows */
 body::before, body::after {
   content: '';
-  position: absolute;
+  position: fixed;
   width: 350px;
   height: 350px;
   border-radius: 50%;
