@@ -194,6 +194,19 @@ To configure the bot, you need a **Twitch Client ID** and **Twitch Client Secret
 > [!IMPORTANT]
 > Never share your Client Secret. Reddit securely encrypts this secret so it is never exposed to regular users or shown in plain text on the page once saved.
 
+## 🌐 Fetch Domains
+
+This app makes HTTP requests to the following external domains (declared in [`devvit.json`](./devvit.json)):
+
+| Domain | Purpose |
+| :--- | :--- |
+| `id.twitch.tv` | Twitch OAuth 2.0 token endpoint. Used to obtain a short-lived App Access Token via the Client Credentials flow, which is required to authenticate all Twitch Helix API requests. |
+| `api.twitch.tv` | Twitch Helix REST API. Used to poll the live status of the configured channel (`/streams`), fetch stream metadata (title, game, viewer count), and retrieve top clips (`/clips`) for the post-stream highlights post. |
+
+No user data is sent to these external services. Only the bot's own Client ID and Client Secret (configured by the moderator) are used for authentication.
+
+---
+
 ## 👨‍💻 Author & Credits
 
 *   **Developer:** Created by [u/iammesutkaya](https://reddit.com/u/iammesutkaya)
