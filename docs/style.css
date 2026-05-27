@@ -34,14 +34,18 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+  background-color: var(--bg-color);
+}
+
 body {
   background-color: var(--bg-color);
   color: var(--text-main);
   font-family: 'Inter', sans-serif;
-  min-height: 100vh;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   line-height: 1.6;
   overflow-x: hidden;
   position: relative;
@@ -78,7 +82,7 @@ body::after {
 .container {
   max-width: 900px;
   width: 100%;
-  margin: 0 auto;
+  margin: 0 auto 40px auto;
   padding: 40px 24px;
   flex-grow: 1;
   display: flex;
@@ -345,7 +349,7 @@ footer {
   color: var(--text-muted);
   font-size: 0.85rem;
   border-top: 1px solid var(--card-border);
-  margin-top: 40px;
+  margin-top: auto;
   background: rgba(11, 15, 25, 0.8);
   backdrop-filter: blur(8px);
 }
