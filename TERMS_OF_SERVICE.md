@@ -78,4 +78,5 @@ These Terms shall be governed by and construed in accordance with the laws of th
 ## 9. Contact Information
 
 For any questions, issues, or support requests related to these Terms, please contact:
+*   **Website:** [livesticky.com](https://livesticky.com)
 *   **Reddit:** [u/iammesutkaya](https://www.reddit.com/user/iammesutkaya)
