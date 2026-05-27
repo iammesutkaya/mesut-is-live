@@ -1,19 +1,14 @@
-<p align="center">
-  <img src="assets/icon.png" alt="LiveSticky Logo" width="128" height="128" style="border-radius: 28px;">
-</p>
+# LiveSticky - Reddit Devvit Bot
 
-<h1 align="center">LiveSticky</h1>
+![LiveSticky Logo](assets/icon.png)
 
-<p align="center">
-  <strong>An advanced, performant, and zero-maintenance stream notification bot for Reddit, designed exclusively for Twitch channels.</strong>
-</p>
+An advanced, performant, and zero-maintenance stream notification bot for Reddit, designed exclusively for Twitch channels.
 
-<p align="center">
-  <a href="https://developers.reddit.com"><img src="https://img.shields.io/badge/Platform-Reddit%20Devvit-FF4500?style=for-the-badge&logo=reddit" alt="Devvit Platform"></a>
-  <a href="https://dev.twitch.tv"><img src="https://img.shields.io/badge/Integration-Twitch%20Helix-9146FF?style=for-the-badge&logo=twitch" alt="Twitch Integration"></a>
-  <a href="https://developers.google.com/youtube"><img src="https://img.shields.io/badge/Integration-YouTube-FF0000?style=for-the-badge&logo=youtube" alt="YouTube Integration"></a>
-  <a href="https://redis.io"><img src="https://img.shields.io/badge/Database-Redis%20Cache-D82C20?style=for-the-badge&logo=redis" alt="Redis Cached"></a>
-</p>
+[![Devvit Platform](https://img.shields.io/badge/Platform-Reddit%20Devvit-FF4500?style=for-the-badge&logo=reddit)](https://developers.reddit.com)
+[![Twitch Integration](https://img.shields.io/badge/Integration-Twitch%20Helix-9146FF?style=for-the-badge&logo=twitch)](https://dev.twitch.tv)
+[![YouTube Integration](https://img.shields.io/badge/Integration-YouTube-FF0000?style=for-the-badge&logo=youtube)](https://developers.google.com/youtube)
+[![Redis Cached](https://img.shields.io/badge/Database-Redis%20Cache-D82C20?style=for-the-badge&logo=redis)](https://redis.io)
+
 
 This bot automatically monitors a specified Twitch stream, creates and flairs a dedicated live discussion thread when the stream goes live, updates the stats (viewers, uptime, category) in real-time every 2 minutes, auto-pins a customizable moderator comment, and unpins/concludes the thread with VOD archives when the stream goes offline.
 
