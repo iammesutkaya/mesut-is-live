@@ -2,7 +2,7 @@
 
 ![LiveSticky Logo](https://raw.githubusercontent.com/iammesutkaya/LiveSticky/main/assets/logo.png)
 
-An advanced, performant, and zero-maintenance stream notification bot for Reddit, designed exclusively for Twitch channels.
+The Bot monitors the livestreaming status of a designated Twitch channel and creates a sticky post on the community's subreddit.
 
 [![Devvit Platform](https://img.shields.io/badge/Platform-Reddit%20Devvit-FF4500?style=for-the-badge&logo=reddit)](https://developers.reddit.com)
 [![Twitch Integration](https://img.shields.io/badge/Integration-Twitch%20Helix-9146FF?style=for-the-badge&logo=twitch)](https://dev.twitch.tv)
