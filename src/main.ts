@@ -975,13 +975,14 @@ Devvit.addTrigger({
   }
 });
 
-// Add a moderator menu item to manually reset/start the scheduler and clear bot state
+// Add a moderator menu item to manually restart the scheduler and clear bot state
 Devvit.addMenuItem({
-  label: 'Reset LiveSticky',
+  label: 'Restart LiveSticky',
+  description: 'Clears cached stream status and restarts the background status checker.',
   location: 'subreddit',
   forUserType: 'moderator',
   onPress: async (_, context) => {
-    console.log('Manual LiveSticky reset triggered by moderator. Clearing scheduler and Redis state...');
+    console.log('Manual LiveSticky restart triggered by moderator. Clearing scheduler and Redis state...');
     await scheduleCheckStatusJob(context);
     await context.redis.del('is_live_pinned');
     await context.redis.del('live_post_id');
@@ -989,7 +990,7 @@ Devvit.addMenuItem({
     await context.redis.del('offline_post_id');
     await context.redis.del('twitch_display_name');
     await context.redis.del('is_offline_post_pinned');
-    context.ui.showToast('LiveSticky has been reset successfully!');
+    context.ui.showToast('LiveSticky has been restarted successfully!');
   },
 });
 
