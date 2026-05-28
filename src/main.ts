@@ -999,7 +999,7 @@ Devvit.addMenuItem({
   location: 'subreddit',
   forUserType: 'moderator',
   onPress: async (_, context) => {
-    context.ui.navigateTo('https://github.com/iammesutkaya/LiveSticky#readme');
+    context.ui.navigateTo('https://github.com/iammesutkaya/LiveSticky#-default-templates-for-copy-pasting');
   },
 });
 
