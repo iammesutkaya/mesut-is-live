@@ -126,11 +126,13 @@ If you need to restore or tweak the default texts, you can copy these markdown t
 #### 1. Live Post Templates
 
 **Default Live Post Title:**
+
 ```text
 🚨 {display_name} is LIVE! 🚨 — {title}
 ```
 
 **Default Live Post Body:**
+
 ```markdown
 * **Category/Game:** {game}
 * **Current Viewers:** {viewers}
@@ -167,11 +169,13 @@ The stream has concluded. VODs and highlights may be available via the links bel
 #### 3. Offline Post Templates
 
 **Default Offline Post Title:**
+
 ```text
 😴 {display_name} is Offline. 😴
 ```
 
 **Default Offline Post Body:**
+
 ```markdown
 The stream is currently offline. Check back soon or follow the channels below to get notified when {display_name} goes live!
 
@@ -213,11 +217,13 @@ Follow the channels below to get notified when {display_name} goes live!
 #### 6. Stream Highlights Templates
 
 **Default Highlights Post Title:**
+
 ```text
 🎬 Top Clips from {display_name}'s stream ({date})
 ```
 
 **Default Highlights Post Custom Header:**
+
 ```markdown
 **Title:**
 {title}
