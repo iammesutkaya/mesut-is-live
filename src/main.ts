@@ -7,6 +7,9 @@ import {
   DEFAULT_OFFLINE_SIDEBAR,
   DEFAULT_HIGHLIGHTS_POST_HEADER,
   DEFAULT_HIGHLIGHTS_POST_FOOTER,
+  DEFAULT_LIVE_POST_TITLE,
+  DEFAULT_OFFLINE_POST_TITLE,
+  DEFAULT_HIGHLIGHTS_POST_TITLE,
 } from './templates.js';
 
 // Enable Reddit, Redis, and HTTP plugins
@@ -385,7 +388,7 @@ const ensureStickyOfflinePost = async (context: any, channel: string, youtubeUrl
   const customOfflineBody = await context.settings.get('offlinePostBody') as string | undefined;
   const offlinePostFooter = await context.settings.get('offlinePostFooter') as string | undefined;
   const concludingBody = formatOfflinePostBody(channel, youtubeUrl, customOfflineBody, offlinePostFooter, DEFAULT_OFFLINE_POST_BODY, displayName);
-  const offlinePostTitle = `😴${displayName} is OFFLINE! CHECK OUT NEWS & USEFUL LINKS😴`;
+  const offlinePostTitle = DEFAULT_OFFLINE_POST_TITLE.replace(/{display_name}/g, displayName);
   const offlinePostId = await context.redis.get('offline_post_id');
   let offlinePostExists = false;
 
@@ -489,7 +492,9 @@ const postStreamHighlights = async (
       day: 'numeric'
     });
 
-    const postTitle = `🎬 Stream Highlights: ${displayName} (${dateStr})`;
+    const postTitle = DEFAULT_HIGHLIGHTS_POST_TITLE
+      .replace(/{display_name}/g, displayName)
+      .replace(/{date}/g, dateStr);
 
     const templateHeader = customHeader || DEFAULT_HIGHLIGHTS_POST_HEADER;
     const header = templateHeader
@@ -647,7 +652,7 @@ Devvit.addSchedulerJob({
     if (isLive && streamInfo) {
       const postBody = formatLivePostBody(streamInfo, channel as string, youtubeUrl, livePostBody, livePostFooter);
       const displayName = streamInfo.user_name || channel;
-      const postTitle = `🚨${displayName} is LIVE!🚨`;
+      const postTitle = DEFAULT_LIVE_POST_TITLE.replace(/{display_name}/g, displayName);
 
       // Reset offline grace period timer if it was active
       const offlineSince = await context.redis.get('offline_since');

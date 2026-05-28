@@ -15,6 +15,13 @@
  */
 
 // ---------------------------------------------------------------------------
+// Post Titles
+// ---------------------------------------------------------------------------
+export const DEFAULT_LIVE_POST_TITLE = '🚨 {display_name} is LIVE! 🚨';
+export const DEFAULT_OFFLINE_POST_TITLE = '😴 {display_name} is Offline 😴';
+export const DEFAULT_HIGHLIGHTS_POST_TITLE = '🎬 Stream Highlights: {display_name} ({date})';
+
+// ---------------------------------------------------------------------------
 // Live post (submitted & pinned when stream goes live)
 // ---------------------------------------------------------------------------
 export const DEFAULT_LIVE_POST_BODY = `\
