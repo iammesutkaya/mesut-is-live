@@ -282,4 +282,3 @@ See the [ROADMAP.md](./ROADMAP.md) file for our upcoming features, integrations,
 * **Twitch:** Follow the live channel at [twitch.tv/mesutkaya](https://twitch.tv/mesutkaya)
 
 *Created with ❤️ for the community.*
-
