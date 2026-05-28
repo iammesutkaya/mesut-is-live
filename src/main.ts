@@ -51,7 +51,7 @@ Devvit.addSettings([
         type: 'string',
         name: 'youtubeUrl',
         label: 'YouTube Channel/Live URL (Optional)',
-        helpText: 'The full URL of your YouTube channel or live stream (e.g., https://youtube.com/c/mesut/live)',
+        helpText: 'The full URL of your YouTube channel or live stream (e.g., https://youtube.com/@ChannelName/live)',
       },
       {
         type: 'string',
