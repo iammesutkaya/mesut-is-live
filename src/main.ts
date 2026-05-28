@@ -77,6 +77,13 @@ Devvit.addSettings([
         helpText: 'Deletes the post and all its comments completely from Reddit when the stream ends.',
       },
       {
+        type: 'number',
+        name: 'offlineGracePeriod',
+        label: 'Offline Grace Period (Minutes)',
+        defaultValue: 6,
+        helpText: 'The buffer period (in minutes) to wait before concluding the stream post when detected offline. Prevents duplicate threads during brief stream crashes.',
+      },
+      {
         type: 'boolean',
         name: 'stickyOfflinePost',
         label: 'Enable Sticky Offline Post',
@@ -94,25 +101,25 @@ Devvit.addSettings([
         type: 'paragraph',
         name: 'offlinePostBody',
         label: 'Offline Post Body (Markdown) (Optional)',
-        helpText: 'Custom markdown for the body of the offline post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/LiveSticky#readme',
+        helpText: 'Custom markdown for the body of the offline post. Supports placeholders: {channel}, {display_name}, {youtube_url}. If empty, the default template is used.',
       },
       {
         type: 'paragraph',
         name: 'offlinePostFooter',
         label: 'Offline Post Custom Footer (Markdown) (Optional)',
-        helpText: 'Custom markdown to append at the bottom of the offline post (works with both custom and default templates). Useful for adding Discord/social links or rules.',
+        helpText: 'Custom markdown to append at the bottom of the offline post. Supports placeholders: {channel}, {youtube_url}.',
       },
       {
         type: 'paragraph',
         name: 'offlineSidebarText',
         label: 'Offline Sidebar Widget Text (Markdown) (Optional)',
-        helpText: 'Custom markdown for the body of the sidebar widget when the stream is offline. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/LiveSticky#readme',
+        helpText: 'Custom markdown for the body of the sidebar widget when the stream is offline. Supports placeholders: {channel}, {display_name}, {youtube_url}. If empty, the default template is used.',
       },
       {
         type: 'paragraph',
         name: 'offlineSidebarFooter',
         label: 'Offline Sidebar Widget Custom Footer (Markdown) (Optional)',
-        helpText: 'Custom markdown to append at the bottom of the offline sidebar widget (works with both custom and default templates). Useful for adding Discord/social links or rules.',
+        helpText: 'Custom markdown to append at the bottom of the offline sidebar widget. Supports placeholders: {channel}, {youtube_url}.',
       }
     ]
   },
@@ -124,31 +131,43 @@ Devvit.addSettings([
         type: 'paragraph',
         name: 'livePostBody',
         label: 'Live Post Body (Markdown) (Optional)',
-        helpText: 'Custom markdown for the body of the live post. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/LiveSticky#readme',
+        helpText: 'Custom markdown for the body of the live post. Supports placeholders: {channel}, {display_name}, {game}, {viewers}, {uptime}, {title}, {youtube_url}. If empty, the default template is used.',
       },
       {
         type: 'paragraph',
         name: 'livePostFooter',
         label: 'Live Post Custom Footer (Markdown) (Optional)',
-        helpText: 'Custom markdown to append at the bottom of the live post (works with both custom and default templates). Useful for adding Discord/social links or rules.',
+        helpText: 'Custom markdown to append at the bottom of the live post. Supports placeholders: {channel}, {youtube_url}.',
       },
       {
         type: 'paragraph',
         name: 'liveCommentText',
         label: 'Auto-Pinned Comment Text (Optional)',
-        helpText: 'Text to automatically post and pin as a mod comment inside the live thread (e.g. Discord link)',
+        helpText: 'Text to automatically post and pin as a mod comment inside the live thread (e.g. Discord link). Supports placeholders: {channel}, {display_name}.',
       },
       {
         type: 'paragraph',
         name: 'liveSidebarText',
         label: 'Live Sidebar Widget Text (Markdown) (Optional)',
-        helpText: 'Custom markdown for the body of the sidebar widget when the stream is live. If empty, the default template is used. You can copy/tweak the default template from: https://github.com/iammesutkaya/LiveSticky#readme',
+        helpText: 'Custom markdown for the body of the sidebar widget when the stream is live. Supports placeholders: {channel}, {display_name}, {game}, {viewers}, {uptime}, {title}, {youtube_url}. If empty, the default template is used.',
       },
       {
         type: 'paragraph',
         name: 'liveSidebarFooter',
         label: 'Live Sidebar Widget Custom Footer (Markdown) (Optional)',
-        helpText: 'Custom markdown to append at the bottom of the sidebar widget when the stream is live.',
+        helpText: 'Custom markdown to append at the bottom of the sidebar widget when the stream is live. Supports placeholders: {channel}, {youtube_url}.',
+      },
+      {
+        type: 'select',
+        name: 'suggestedSort',
+        label: 'Suggested Comment Sort',
+        options: [
+          { label: 'New (Recommended)', value: 'NEW' },
+          { label: 'Live', value: 'LIVE' },
+          { label: 'Q&A', value: 'QA' },
+          { label: 'None (Subreddit default)', value: 'BLANK' }
+        ],
+        defaultValue: ['NEW'],
       }
     ]
   },
@@ -167,31 +186,31 @@ Devvit.addSettings([
         type: 'string',
         name: 'highlightsFlairId',
         label: 'Highlights Post Flair Template ID (Optional)',
-        helpText: 'The UUID of the flair template to apply to the stream highlights post (from Mod Tools -> Post Flair)',
+        helpText: 'The UUID of the flair template to apply to the stream highlights post (from Mod Tools -> Post Flair).',
       },
       {
         type: 'paragraph',
         name: 'concludingPostBody',
         label: 'Concluding Post Body (Markdown) (Optional)',
-        helpText: 'Custom markdown for the live post body after the stream ends (it is updated and locked). If empty, the default template is used.',
+        helpText: 'Custom markdown for the live post body after the stream ends. Supports placeholders: {channel}, {display_name}, {title}, {youtube_url}. If empty, the default template is used.',
       },
       {
         type: 'paragraph',
         name: 'concludingPostFooter',
         label: 'Concluding Post Custom Footer (Markdown) (Optional)',
-        helpText: 'Custom markdown to append at the bottom of the concluding post (works with both custom and default templates).',
+        helpText: 'Custom markdown to append at the bottom of the concluding post. Supports placeholders: {channel}, {youtube_url}.',
       },
       {
         type: 'paragraph',
         name: 'highlightsHeader',
         label: 'Highlights Post Custom Header (Markdown) (Optional)',
-        helpText: 'Custom markdown for the header of the stream highlights post. If empty, the default template is used.',
+        helpText: 'Custom markdown for the header of the stream highlights post. Supports placeholders: {channel}, {display_name}, {title}, {date}. If empty, the default template is used.',
       },
       {
         type: 'paragraph',
         name: 'highlightsFooter',
         label: 'Highlights Post Custom Footer (Markdown) (Optional)',
-        helpText: 'Custom markdown to append at the bottom of the stream highlights post. If empty, the default template is used.',
+        helpText: 'Custom markdown to append at the bottom of the stream highlights post. Supports placeholders: {channel}. If empty, the default template is used.',
       }
     ]
   }
@@ -542,6 +561,8 @@ Devvit.addSchedulerJob({
     const offlineSidebarFooter = await context.settings.get('offlineSidebarFooter') as string | undefined;
     const highlightsHeader = await context.settings.get('highlightsHeader') as string | undefined;
     const highlightsFooter = await context.settings.get('highlightsFooter') as string | undefined;
+    const offlineGracePeriod = await context.settings.get('offlineGracePeriod') as number | undefined;
+    const suggestedSort = await context.settings.get('suggestedSort') as string | undefined;
     
     if (!channel || !clientId || !secret) {
       console.log(`Missing Twitch configuration - Channel: ${!!channel}, ClientID: ${!!clientId}, Secret: ${!!secret}`);
@@ -670,12 +691,14 @@ Devvit.addSchedulerJob({
           });
           await post.sticky();
 
-          // Set suggested comment sort to new
-          try {
-            await post.setSuggestedCommentSort('NEW');
-            console.log('Successfully set suggested comment sort to NEW.');
-          } catch (sortError) {
-            console.error('Failed to set suggested comment sort:', sortError);
+          // Set suggested comment sort
+          if (suggestedSort && suggestedSort !== 'BLANK') {
+            try {
+              await post.setSuggestedCommentSort(suggestedSort as any);
+              console.log(`Successfully set suggested comment sort to ${suggestedSort}.`);
+            } catch (sortError) {
+              console.error(`Failed to set suggested comment sort to ${suggestedSort}:`, sortError);
+            }
           }
           
           // Apply custom flair if template ID is provided
@@ -734,19 +757,21 @@ Devvit.addSchedulerJob({
       // Stream is detected offline but was marked pinned. Check offline grace period!
       const offlineSince = await context.redis.get('offline_since');
       
+      const gracePeriodMin = (offlineGracePeriod !== undefined && offlineGracePeriod >= 0) ? offlineGracePeriod : 6;
+      
       if (!offlineSince) {
-        // First check detecting offline status. Start the 6-minute grace period!
+        // First check detecting offline status. Start the grace period!
         const timestamp = Date.now().toString();
         await context.redis.set('offline_since', timestamp);
-        console.log('Stream detected offline. Starting 6-minute grace period buffer...');
+        console.log(`Stream detected offline. Starting ${gracePeriodMin}-minute grace period buffer...`);
       } else {
         // Subsequent check detecting offline status. Parse and check elapsed time.
         const firstOfflineTime = parseInt(offlineSince, 10);
         const elapsedMinutes = (Date.now() - firstOfflineTime) / 60000;
         
-        console.log(`Stream is still offline. Grace period active: ${elapsedMinutes.toFixed(1)}m elapsed of 6m.`);
+        console.log(`Stream is still offline. Grace period active: ${elapsedMinutes.toFixed(1)}m elapsed of ${gracePeriodMin}m.`);
         
-        if (elapsedMinutes >= 6) {
+        if (elapsedMinutes >= gracePeriodMin) {
           console.log('Grace period expired! Concluding post and unpinning...');
           
           // Clear live state immediately to prevent duplicate conclude/unpin calls
