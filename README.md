@@ -270,9 +270,16 @@ No user data is sent to these external services. Only the bot's own Client ID an
 
 ---
 
+## 🗺️ Roadmap
+
+See the [ROADMAP.md](./ROADMAP.md) file for our upcoming features, integrations, and future enhancements!
+
+---
+
 ## 👨‍💻 Author & Credits
 
 * **Developer:** Created by [u/iammesutkaya](https://reddit.com/u/iammesutkaya)
 * **Twitch:** Follow the live channel at [twitch.tv/mesutkaya](https://twitch.tv/mesutkaya)
 
 *Created with ❤️ for the community.*
+
