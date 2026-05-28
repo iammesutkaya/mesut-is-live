@@ -977,11 +977,11 @@ Devvit.addTrigger({
 
 // Add a moderator menu item to manually reset/start the scheduler and clear bot state
 Devvit.addMenuItem({
-  label: 'Reset Twitch Stream Bot',
+  label: 'Reset LiveSticky',
   location: 'subreddit',
   forUserType: 'moderator',
   onPress: async (_, context) => {
-    console.log('Manual bot reset triggered by moderator. Clearing scheduler and Redis state...');
+    console.log('Manual LiveSticky reset triggered by moderator. Clearing scheduler and Redis state...');
     await scheduleCheckStatusJob(context);
     await context.redis.del('is_live_pinned');
     await context.redis.del('live_post_id');
@@ -989,13 +989,13 @@ Devvit.addMenuItem({
     await context.redis.del('offline_post_id');
     await context.redis.del('twitch_display_name');
     await context.redis.del('is_offline_post_pinned');
-    context.ui.showToast('Twitch Stream Bot has been reset successfully!');
+    context.ui.showToast('LiveSticky has been reset successfully!');
   },
 });
 
 // Add a moderator menu item to quickly access the default settings templates
 Devvit.addMenuItem({
-  label: 'Get Default Bot Templates',
+  label: 'Get Default LiveSticky Templates',
   location: 'subreddit',
   forUserType: 'moderator',
   onPress: async (_, context) => {

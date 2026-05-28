@@ -26,8 +26,8 @@ npx devvit install
 
 In your subreddit, click the **Mod Tools** menu and you will find two custom moderator actions:
 
-* **"Reset Twitch Stream Bot"**: Resets Redis state, recreates the 2-minute status checker, and initializes the bot state.
-* **"Get Default Bot Templates"**: Click this to immediately open a browser page with the copyable default templates for the settings inputs.
+* **"Reset LiveSticky"**: Resets Redis state, recreates the 2-minute status checker, and initializes the bot state.
+* **"Get Default LiveSticky Templates"**: Click this to immediately open a browser page with the copyable default templates for the settings inputs.
 
 ---
 
