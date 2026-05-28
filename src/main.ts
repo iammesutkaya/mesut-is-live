@@ -647,6 +647,33 @@ Devvit.addSchedulerJob({
       token = cachedToken;
     }
 
+    // 2.5 Fetch and cache Twitch display name if not already cached
+    let cachedDisplayName = await context.redis.get('twitch_display_name');
+    if (!cachedDisplayName) {
+      try {
+        console.log(`Cache miss for twitch_display_name. Fetching user info for ${channel} from Twitch...`);
+        const userRes = await fetch(`https://api.twitch.tv/helix/users?login=${channel}`, {
+          headers: {
+            'Client-ID': clientId as string,
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (userRes.ok) {
+          const userData = await userRes.json();
+          if (userData.data && userData.data.length > 0) {
+            const resolvedDisplayName = userData.data[0].display_name as string;
+            cachedDisplayName = resolvedDisplayName;
+            await context.redis.set('twitch_display_name', resolvedDisplayName);
+            console.log(`Successfully fetched and cached Twitch display name: ${resolvedDisplayName}`);
+          }
+        } else {
+          console.error(`Failed to fetch user info from Twitch: ${userRes.statusText}`);
+        }
+      } catch (userError) {
+        console.error('Error fetching Twitch user info:', userError);
+      }
+    }
+
     // 3. Check Stream Status
     let isLive = false;
     let streamInfo: any = null;
@@ -987,6 +1014,11 @@ const scheduleCheckStatusJob = async (context: any) => {
     await context.scheduler.runJob({
       name: 'check-twitch-status',
       cron: '*/2 * * * *',
+    });
+    console.log('Scheduling immediate check-twitch-status execution...');
+    await context.scheduler.runJob({
+      name: 'check-twitch-status',
+      runAt: new Date(Date.now() + 1000),
     });
     console.log('Successfully scheduled check-twitch-status job.');
   } catch (e) {
