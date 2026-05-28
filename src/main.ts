@@ -101,6 +101,7 @@ Devvit.addSettings([
         type: 'paragraph',
         name: 'offlinePostBody',
         label: 'Offline Post Body (Markdown) (Optional)',
+        defaultValue: DEFAULT_OFFLINE_POST_BODY,
         helpText: 'Custom markdown for the body of the offline post. Supports placeholders: {channel}, {display_name}, {youtube_url}. If empty, the default template is used.',
       },
       {
@@ -113,6 +114,7 @@ Devvit.addSettings([
         type: 'paragraph',
         name: 'offlineSidebarText',
         label: 'Offline Sidebar Widget Text (Markdown) (Optional)',
+        defaultValue: DEFAULT_OFFLINE_SIDEBAR,
         helpText: 'Custom markdown for the body of the sidebar widget when the stream is offline. Supports placeholders: {channel}, {display_name}, {youtube_url}. If empty, the default template is used.',
       },
       {
@@ -131,6 +133,7 @@ Devvit.addSettings([
         type: 'paragraph',
         name: 'livePostBody',
         label: 'Live Post Body (Markdown) (Optional)',
+        defaultValue: DEFAULT_LIVE_POST_BODY,
         helpText: 'Custom markdown for the body of the live post. Supports placeholders: {channel}, {display_name}, {game}, {viewers}, {uptime}, {title}, {youtube_url}. If empty, the default template is used.',
       },
       {
@@ -149,6 +152,7 @@ Devvit.addSettings([
         type: 'paragraph',
         name: 'liveSidebarText',
         label: 'Live Sidebar Widget Text (Markdown) (Optional)',
+        defaultValue: DEFAULT_LIVE_SIDEBAR,
         helpText: 'Custom markdown for the body of the sidebar widget when the stream is live. Supports placeholders: {channel}, {display_name}, {game}, {viewers}, {uptime}, {title}, {youtube_url}. If empty, the default template is used.',
       },
       {
@@ -192,6 +196,7 @@ Devvit.addSettings([
         type: 'paragraph',
         name: 'concludingPostBody',
         label: 'Concluding Post Body (Markdown) (Optional)',
+        defaultValue: DEFAULT_CONCLUDING_POST_BODY,
         helpText: 'Custom markdown for the live post body after the stream ends. Supports placeholders: {channel}, {display_name}, {title}, {youtube_url}. If empty, the default template is used.',
       },
       {
@@ -204,12 +209,14 @@ Devvit.addSettings([
         type: 'paragraph',
         name: 'highlightsHeader',
         label: 'Highlights Post Custom Header (Markdown) (Optional)',
+        defaultValue: DEFAULT_HIGHLIGHTS_POST_HEADER,
         helpText: 'Custom markdown for the header of the stream highlights post. Supports placeholders: {channel}, {display_name}, {title}, {date}. If empty, the default template is used.',
       },
       {
         type: 'paragraph',
         name: 'highlightsFooter',
         label: 'Highlights Post Custom Footer (Markdown) (Optional)',
+        defaultValue: DEFAULT_HIGHLIGHTS_POST_FOOTER,
         helpText: 'Custom markdown to append at the bottom of the stream highlights post. Supports placeholders: {channel}. If empty, the default template is used.',
       }
     ]
