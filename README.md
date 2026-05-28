@@ -91,6 +91,7 @@ Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **live-sticky
 | **Offline Grace Period (Minutes)** | `Number` | The buffer period (in minutes) to wait before concluding the stream post when detected offline (defaults to `6`). Prevents duplicate threads during brief stream crashes. |
 | **Enable Sticky Offline Post** | `Boolean` | Recycles a single permanent stickied post when offline (`😴[DisplayName] is OFFLINE! CHECK OUT NEWS & USEFUL LINKS😴`) to prevent new-post notifications, automatically clearing/flushing old comments on each transition so the comment section starts fresh. |
 | **Enable Sidebar Widget** | `Boolean` | Creates and automatically updates a "STREAM STATUS" text widget in your subreddit sidebar reflecting the live/offline state, category, viewers, and uptime in real-time. |
+| **Offline Post Title (Optional)** | `String` | Custom title for the offline post. If empty, the default template is used. Supports placeholder: `{display_name}`. |
 | **Offline Post Body (Optional)** | `Paragraph` | Custom markdown for the body of the offline post. If empty, the default template is used. You can use `{channel}`, `{display_name}`, and `{youtube_url}` as dynamic placeholders. |
 | **Offline Post Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the offline post (works with both custom and default templates). Useful for adding Discord/social links or rules. |
 | **Offline Sidebar Widget Text (Optional)** | `Paragraph` | Custom markdown for the sidebar widget when offline. If empty, the default template is used. You can use `{channel}`, `{display_name}`, and `{youtube_url}` as placeholders. |
@@ -100,6 +101,7 @@ Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **live-sticky
 
 | Setting Name | Type | Description |
 | :--- | :--- | :--- |
+| **Live Post Title (Optional)** | `String` | Custom title for the live post. If empty, the default template is used. Supports placeholders: `{display_name}`, `{title}`. |
 | **Live Post Body (Optional)** | `Paragraph` | Custom markdown for the body of the live post. If empty, the default template is used. You can use `{channel}`, `{display_name}`, `{game}`, `{viewers}`, `{uptime}`, `{title}`, and `{youtube_url}` as dynamic placeholders. |
 | **Live Post Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the live post (works with both custom and default templates). Useful for adding Discord/social links or rules. |
 | **Auto-Pinned Comment Text (Optional)** | `Paragraph` | Custom multiline markdown to pin at the top of the comment section (supports paragraphs, list formatting, and links). |
@@ -113,6 +115,7 @@ Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **live-sticky
 | :--- | :--- | :--- |
 | **Enable Stream Highlights Post** | `Boolean` | Automatically compiles and posts the top Twitch clips generated during the stream when it ends. |
 | **Highlights Post Flair Template ID (Optional)** | `String` | The UUID of the flair template to apply to the stream highlights post. |
+| **Highlights Post Title (Optional)** | `String` | Custom title for the stream highlights post. If empty, the default template is used. Supports placeholders: `{display_name}`, `{date}`. |
 | **Highlights Post Custom Header (Optional)** | `Paragraph` | Custom markdown for the header of the stream highlights post. If empty, the default template is used. You can use `{channel}`, `{display_name}`, `{title}`, and `{date}` as dynamic placeholders. |
 | **Highlights Post Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the stream highlights post. If empty, the default template is used. You can use `{channel}` as a dynamic placeholder. |
 

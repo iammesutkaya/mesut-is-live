@@ -101,6 +101,13 @@ Devvit.addSettings([
         helpText: 'Creates and automatically updates a "Stream Status" text widget in your subreddit sidebar.',
       },
       {
+        type: 'string',
+        name: 'offlinePostTitle',
+        label: 'Offline Post Title (Optional)',
+        defaultValue: DEFAULT_OFFLINE_POST_TITLE,
+        helpText: 'Custom title for the offline post. Supports placeholders: {display_name}. If empty, the default template is used.',
+      },
+      {
         type: 'paragraph',
         name: 'offlinePostBody',
         label: 'Offline Post Body (Markdown) (Optional)',
@@ -144,6 +151,13 @@ Devvit.addSettings([
         name: 'livePostFooter',
         label: 'Live Post Custom Footer (Markdown) (Optional)',
         helpText: 'Custom markdown to append at the bottom of the live post. Supports placeholders: {channel}, {youtube_url}.',
+      },
+      {
+        type: 'string',
+        name: 'livePostTitle',
+        label: 'Live Post Title (Optional)',
+        defaultValue: DEFAULT_LIVE_POST_TITLE,
+        helpText: 'Custom title for the live post. Supports placeholders: {display_name}, {title}. If empty, the default template is used.',
       },
       {
         type: 'paragraph',
@@ -194,6 +208,13 @@ Devvit.addSettings([
         name: 'highlightsFlairId',
         label: 'Highlights Post Flair Template ID (Optional)',
         helpText: 'The UUID of the flair template to apply to the stream highlights post (from Mod Tools -> Post Flair).',
+      },
+      {
+        type: 'string',
+        name: 'highlightsPostTitle',
+        label: 'Highlights Post Title (Optional)',
+        defaultValue: DEFAULT_HIGHLIGHTS_POST_TITLE,
+        helpText: 'Custom title for the stream highlights post. Supports placeholders: {display_name}, {date}. If empty, the default template is used.',
       },
       {
         type: 'paragraph',
@@ -388,7 +409,9 @@ const ensureStickyOfflinePost = async (context: any, channel: string, youtubeUrl
   const customOfflineBody = await context.settings.get('offlinePostBody') as string | undefined;
   const offlinePostFooter = await context.settings.get('offlinePostFooter') as string | undefined;
   const concludingBody = formatOfflinePostBody(channel, youtubeUrl, customOfflineBody, offlinePostFooter, DEFAULT_OFFLINE_POST_BODY, displayName);
-  const offlinePostTitle = DEFAULT_OFFLINE_POST_TITLE.replace(/{display_name}/g, displayName);
+  const customOfflineTitle = await context.settings.get('offlinePostTitle') as string | undefined;
+  const templateTitle = customOfflineTitle || DEFAULT_OFFLINE_POST_TITLE;
+  const offlinePostTitle = templateTitle.replace(/{display_name}/g, displayName);
   const offlinePostId = await context.redis.get('offline_post_id');
   let offlinePostExists = false;
 
@@ -452,7 +475,8 @@ const postStreamHighlights = async (
   displayName: string,
   customHeader?: string,
   customFooter?: string,
-  flairTemplateId?: string
+  flairTemplateId?: string,
+  customTitle?: string
 ) => {
   try {
     console.log(`Fetching top clips for broadcaster ${broadcasterId} since ${startedAt}...`);
@@ -492,7 +516,8 @@ const postStreamHighlights = async (
       day: 'numeric'
     });
 
-    const postTitle = DEFAULT_HIGHLIGHTS_POST_TITLE
+    const templateTitle = customTitle || DEFAULT_HIGHLIGHTS_POST_TITLE;
+    const postTitle = templateTitle
       .replace(/{display_name}/g, displayName)
       .replace(/{date}/g, dateStr);
 
@@ -563,6 +588,8 @@ Devvit.addSchedulerJob({
     const updateSidebarWidget = await context.settings.get('updateSidebarWidget') as boolean | undefined;
     const enableHighlightsPost = await context.settings.get('enableHighlightsPost') as boolean | undefined;
     const highlightsFlairId = await context.settings.get('highlightsFlairId') as string | undefined;
+    const livePostTitle = await context.settings.get('livePostTitle') as string | undefined;
+    const highlightsPostTitle = await context.settings.get('highlightsPostTitle') as string | undefined;
     const livePostBody = await context.settings.get('livePostBody') as string | undefined;
     const livePostFooter = await context.settings.get('livePostFooter') as string | undefined;
     const concludingPostBody = await context.settings.get('concludingPostBody') as string | undefined;
@@ -652,7 +679,10 @@ Devvit.addSchedulerJob({
     if (isLive && streamInfo) {
       const postBody = formatLivePostBody(streamInfo, channel as string, youtubeUrl, livePostBody, livePostFooter);
       const displayName = streamInfo.user_name || channel;
-      const postTitle = DEFAULT_LIVE_POST_TITLE.replace(/{display_name}/g, displayName);
+      const templateTitle = livePostTitle || DEFAULT_LIVE_POST_TITLE;
+      const postTitle = templateTitle
+        .replace(/{display_name}/g, displayName)
+        .replace(/{title}/g, streamInfo.title || 'Live Stream');
 
       // Reset offline grace period timer if it was active
       const offlineSince = await context.redis.get('offline_since');
@@ -866,7 +896,8 @@ Devvit.addSchedulerJob({
                 displayName,
                 highlightsHeader,
                 highlightsFooter,
-                highlightsFlairId
+                highlightsFlairId,
+                highlightsPostTitle
               );
             } catch (highlightsError) {
               console.error('Failed to trigger postStreamHighlights:', highlightsError);
