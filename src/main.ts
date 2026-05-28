@@ -180,6 +180,18 @@ Devvit.addSettings([
         name: 'concludingPostFooter',
         label: 'Concluding Post Custom Footer (Markdown) (Optional)',
         helpText: 'Custom markdown to append at the bottom of the concluding post (works with both custom and default templates).',
+      },
+      {
+        type: 'paragraph',
+        name: 'highlightsHeader',
+        label: 'Highlights Post Custom Header (Markdown) (Optional)',
+        helpText: 'Custom markdown for the header of the stream highlights post. If empty, the default template is used.',
+      },
+      {
+        type: 'paragraph',
+        name: 'highlightsFooter',
+        label: 'Highlights Post Custom Footer (Markdown) (Optional)',
+        helpText: 'Custom markdown to append at the bottom of the stream highlights post. If empty, the default template is used.',
       }
     ]
   }
@@ -409,6 +421,8 @@ const postStreamHighlights = async (
   streamTitle: string,
   channelName: string,
   displayName: string,
+  customHeader?: string,
+  customFooter?: string,
   flairTemplateId?: string
 ) => {
   try {
@@ -451,7 +465,8 @@ const postStreamHighlights = async (
 
     const postTitle = `🎬 Stream Highlights: ${displayName} (${dateStr})`;
 
-    const header = DEFAULT_HIGHLIGHTS_POST_HEADER
+    const templateHeader = customHeader || DEFAULT_HIGHLIGHTS_POST_HEADER;
+    const header = templateHeader
       .replace(/{display_name}/g, displayName)
       .replace(/{title}/g, streamTitle)
       .replace(/{date}/g, dateStr)
@@ -469,7 +484,8 @@ const postStreamHighlights = async (
       body += `   * **Clipped by:** ${creator}\n\n`;
     });
     
-    const footer = DEFAULT_HIGHLIGHTS_POST_FOOTER
+    const templateFooter = customFooter || DEFAULT_HIGHLIGHTS_POST_FOOTER;
+    const footer = templateFooter
       .replace(/{channel}/g, channelName);
 
     body += footer;
@@ -524,6 +540,8 @@ Devvit.addSchedulerJob({
     const liveSidebarFooter = await context.settings.get('liveSidebarFooter') as string | undefined;
     const offlineSidebarText = await context.settings.get('offlineSidebarText') as string | undefined;
     const offlineSidebarFooter = await context.settings.get('offlineSidebarFooter') as string | undefined;
+    const highlightsHeader = await context.settings.get('highlightsHeader') as string | undefined;
+    const highlightsFooter = await context.settings.get('highlightsFooter') as string | undefined;
     
     if (!channel || !clientId || !secret) {
       console.log(`Missing Twitch configuration - Channel: ${!!channel}, ClientID: ${!!clientId}, Secret: ${!!secret}`);
@@ -809,6 +827,8 @@ Devvit.addSchedulerJob({
                 streamTitle,
                 channel as string,
                 displayName,
+                highlightsHeader,
+                highlightsFooter,
                 highlightsFlairId
               );
             } catch (highlightsError) {

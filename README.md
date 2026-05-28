@@ -111,6 +111,8 @@ Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **live-sticky
 | :--- | :--- | :--- |
 | **Enable Stream Highlights Post** | `Boolean` | Automatically compiles and posts the top Twitch clips generated during the stream when it ends. |
 | **Highlights Post Flair Template ID (Optional)** | `String` | The UUID of the flair template to apply to the stream highlights post. |
+| **Highlights Post Custom Header (Optional)** | `Paragraph` | Custom markdown for the header of the stream highlights post. If empty, the default template is used. You can use `{channel}`, `{display_name}`, `{title}`, and `{date}` as dynamic placeholders. |
+| **Highlights Post Custom Footer (Optional)** | `Paragraph` | Custom markdown to append at the bottom of the stream highlights post. If empty, the default template is used. You can use `{channel}` as a dynamic placeholder. |
 
 ### 📝 Default Templates for Copy-Pasting
 
