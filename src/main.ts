@@ -1033,6 +1033,7 @@ Devvit.addMenuItem({
 // Add a moderator menu item to quickly access the default settings templates
 Devvit.addMenuItem({
   label: 'Get Default LiveSticky Templates',
+  description: 'Opens GitHub page with copy-pasteable markdown templates for settings.',
   location: 'subreddit',
   forUserType: 'moderator',
   onPress: async (_, context) => {
