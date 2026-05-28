@@ -89,7 +89,7 @@ Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **live-sticky
 | **Remove Live Post from Feed when Offline** | `Boolean` | Moderator action: Hides the live post from the main subreddit listing when offline (prevents feed flooding while keeping comments/links active). |
 | **Delete Live Post completely when Offline** | `Boolean` | Completely deletes the live post and all its comments from Reddit when the stream ends. |
 | **Offline Grace Period (Minutes)** | `Number` | The buffer period (in minutes) to wait before concluding the stream post when detected offline (defaults to `6`). Prevents duplicate threads during brief stream crashes. |
-| **Enable Sticky Offline Post** | `Boolean` | Recycles a single permanent stickied post when offline (`😴[DisplayName] is OFFLINE! CHECK OUT NEWS & USEFUL LINKS😴`) to prevent new-post notifications, automatically clearing/flushing old comments on each transition so the comment section starts fresh. |
+| **Enable Sticky Offline Post** | `Boolean` | Recycles a single permanent stickied post when offline (e.g. `😴 {display_name} is Offline. 😴`) to prevent new-post notifications, automatically clearing/flushing old comments on each transition so the comment section starts fresh. |
 | **Enable Sidebar Widget** | `Boolean` | Creates and automatically updates a "STREAM STATUS" text widget in your subreddit sidebar reflecting the live/offline state, category, viewers, and uptime in real-time. |
 | **Offline Post Title (Optional)** | `String` | Custom title for the offline post. If empty, the default template is used. Supports placeholder: `{display_name}`. |
 | **Offline Post Body (Optional)** | `Paragraph` | Custom markdown for the body of the offline post. If empty, the default template is used. You can use `{channel}`, `{display_name}`, and `{youtube_url}` as dynamic placeholders. |
@@ -123,11 +123,15 @@ Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **live-sticky
 
 If you need to restore or tweak the default texts, you can copy these markdown templates:
 
-#### 1. Default Live Post Body
+#### 1. Live Post Templates
 
+**Default Live Post Title:**
+```text
+🚨 {display_name} is LIVE! 🚨 — {title}
+```
+
+**Default Live Post Body:**
 ```markdown
-### 🚨 {display_name} is LIVE! 🚨 — {title}
-
 * **Category/Game:** {game}
 * **Current Viewers:** {viewers}
 * **Uptime:** live for {uptime}
@@ -160,11 +164,15 @@ The stream has concluded. VODs and highlights may be available via the links bel
 *This live thread has concluded and is now locked.*
 ```
 
-#### 3. Default Offline Post Body
+#### 3. Offline Post Templates
 
+**Default Offline Post Title:**
+```text
+😴 {display_name} is Offline. 😴
+```
+
+**Default Offline Post Body:**
 ```markdown
-### 😴 {display_name} is Offline. 😴
-
 The stream is currently offline. Check back soon or follow the channels below to get notified when {display_name} goes live!
 
 ---
@@ -202,11 +210,15 @@ Follow the channels below to get notified when {display_name} goes live!
 [**▶️ Visit YouTube Channel**]({youtube_url})
 ```
 
-#### 6. Default Stream Highlights Header
+#### 6. Stream Highlights Templates
 
+**Default Highlights Post Title:**
+```text
+🎬 Top Clips from {display_name}'s stream ({date})
+```
+
+**Default Highlights Post Custom Header:**
 ```markdown
-### 🎬 Top Clips from {display_name}'s stream ({date})
-
 **Title:**
 {title}
 
