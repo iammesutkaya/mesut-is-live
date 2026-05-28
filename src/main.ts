@@ -1,4 +1,13 @@
 import { Devvit, SettingScope } from '@devvit/public-api';
+import {
+  DEFAULT_LIVE_POST_BODY,
+  DEFAULT_CONCLUDING_POST_BODY,
+  DEFAULT_OFFLINE_POST_BODY,
+  DEFAULT_LIVE_SIDEBAR,
+  DEFAULT_OFFLINE_SIDEBAR,
+  DEFAULT_HIGHLIGHTS_POST_HEADER,
+  DEFAULT_HIGHLIGHTS_POST_FOOTER,
+} from './templates.js';
 
 // Enable Reddit, Redis, and HTTP plugins
 Devvit.configure({
@@ -159,6 +168,18 @@ Devvit.addSettings([
         name: 'highlightsFlairId',
         label: 'Highlights Post Flair Template ID (Optional)',
         helpText: 'The UUID of the flair template to apply to the stream highlights post (from Mod Tools -> Post Flair)',
+      },
+      {
+        type: 'paragraph',
+        name: 'concludingPostBody',
+        label: 'Concluding Post Body (Markdown) (Optional)',
+        helpText: 'Custom markdown for the live post body after the stream ends (it is updated and locked). If empty, the default template is used.',
+      },
+      {
+        type: 'paragraph',
+        name: 'concludingPostFooter',
+        label: 'Concluding Post Custom Footer (Markdown) (Optional)',
+        helpText: 'Custom markdown to append at the bottom of the concluding post (works with both custom and default templates).',
       }
     ]
   }
@@ -184,7 +205,7 @@ const formatLivePostBody = (
 
   const displayName = streamInfo.user_name || channelName;
 
-  const content = customBody || `### 🔴 LIVE NOW: {title}\n\n* **Category/Game:** {game}\n* **Current Viewers:** {viewers}\n* **Uptime:** live for {uptime}\n\n---\n### 📺 Where to watch:\n* **Twitch:** [twitch.tv/{channel}](https://twitch.tv/{channel})\n* **YouTube:** [Watch on YouTube]({youtube_url})\n\n---\n*Stats are auto-updated in real-time by the subreddit bot.*`;
+  const content = customBody || DEFAULT_LIVE_POST_BODY;
 
   let result = content
     .replace(/{channel}/g, channelName)
@@ -211,10 +232,24 @@ const formatLivePostBody = (
   return result;
 };
 
-const formatOfflinePostBody = (channelName: string, youtubeUrl?: string, customBody?: string, footer?: string): string => {
-  const content = customBody || `### 😴 STREAM OFFLINE\n\nThe stream has ended. Thank you for watching! \n\n---\n### 📺 Channels:\n* **Twitch:** [twitch.tv/{channel}](https://twitch.tv/{channel})\n* **YouTube:** [Watch VODs on YouTube]({youtube_url})\n\n---\n*This live thread has concluded. VODs and highlights may be available on the links above.*`;
+const formatOfflinePostBody = (
+  channelName: string,
+  youtubeUrl?: string,
+  customBody?: string,
+  footer?: string,
+  defaultTemplate: string = DEFAULT_OFFLINE_POST_BODY,
+  displayName?: string,
+  title?: string
+): string => {
+  const content = customBody || defaultTemplate;
 
   let result = content.replace(/{channel}/g, channelName);
+  if (displayName) {
+    result = result.replace(/{display_name}/g, displayName);
+  }
+  if (title) {
+    result = result.replace(/{title}/g, title);
+  }
   if (youtubeUrl) {
     result = result.replace(/{youtube_url}/g, youtubeUrl);
   } else {
@@ -257,7 +292,7 @@ const formatSidebarWidgetText = (
       uptimeStr = diffHrs > 0 ? `${diffHrs}h ${diffMins}m` : `${diffMins}m`;
     }
 
-    const content = customLiveText || `# 🚨 {display_name} is LIVE! 🚨\n\n* **Game:** {game}\n* **Viewers:** {viewers}\n* **Uptime:** live for {uptime}\n\n**Title:**\n{title}\n\n[**👉 Watch Live on Twitch**](https://twitch.tv/{channel})\n\n[**📺 Watch on YouTube**]({youtube_url})`;
+    const content = customLiveText || DEFAULT_LIVE_SIDEBAR;
 
     let result = content
       .replace(/{channel}/g, channelName)
@@ -282,7 +317,7 @@ const formatSidebarWidgetText = (
     }
     return result;
   } else {
-    const content = customOfflineText || `# 😴 {display_name} is OFFLINE 😴\n\nThe stream is currently offline. Follow the channels below to get notified when we go live!\n\n* [**Twitch Channel**](https://twitch.tv/{channel})\n* [**YouTube Channel**]({youtube_url})`;
+    const content = customOfflineText || DEFAULT_OFFLINE_SIDEBAR;
 
     let result = content
       .replace(/{channel}/g, channelName)
@@ -311,7 +346,7 @@ const ensureStickyOfflinePost = async (context: any, channel: string, youtubeUrl
   const displayName = cachedDisplayName || channel;
   const customOfflineBody = await context.settings.get('offlinePostBody') as string | undefined;
   const offlinePostFooter = await context.settings.get('offlinePostFooter') as string | undefined;
-  const concludingBody = formatOfflinePostBody(channel, youtubeUrl, customOfflineBody, offlinePostFooter);
+  const concludingBody = formatOfflinePostBody(channel, youtubeUrl, customOfflineBody, offlinePostFooter, DEFAULT_OFFLINE_POST_BODY, displayName);
   const offlinePostTitle = `😴${displayName} is OFFLINE! CHECK OUT NEWS & USEFUL LINKS😴`;
   const offlinePostId = await context.redis.get('offline_post_id');
   let offlinePostExists = false;
@@ -373,6 +408,7 @@ const postStreamHighlights = async (
   startedAt: string,
   streamTitle: string,
   channelName: string,
+  displayName: string,
   flairTemplateId?: string
 ) => {
   try {
@@ -413,9 +449,15 @@ const postStreamHighlights = async (
       day: 'numeric'
     });
 
-    const postTitle = `🎥 Stream Highlights: ${streamTitle} (${dateStr})`;
-    
-    let body = `### 🎥 Top Clips from today's stream:\n\n`;
+    const postTitle = `🎬 Stream Highlights: ${displayName} (${dateStr})`;
+
+    const header = DEFAULT_HIGHLIGHTS_POST_HEADER
+      .replace(/{display_name}/g, displayName)
+      .replace(/{title}/g, streamTitle)
+      .replace(/{date}/g, dateStr)
+      .replace(/{channel}/g, channelName);
+
+    let body = header;
     
     topClips.forEach((clip: any, index: number) => {
       const views = clip.view_count !== undefined ? clip.view_count.toLocaleString() : '0';
@@ -427,7 +469,10 @@ const postStreamHighlights = async (
       body += `   * **Clipped by:** ${creator}\n\n`;
     });
     
-    body += `---\n*Highlights compiled automatically from Twitch by the subreddit bot. Watch VODs and catch the next stream live on [twitch.tv/${channelName}](https://twitch.tv/${channelName})!*`;
+    const footer = DEFAULT_HIGHLIGHTS_POST_FOOTER
+      .replace(/{channel}/g, channelName);
+
+    body += footer;
 
     const subreddit = await context.reddit.getCurrentSubreddit();
     const highlightsPost = await context.reddit.submitPost({
@@ -473,8 +518,8 @@ Devvit.addSchedulerJob({
     const highlightsFlairId = await context.settings.get('highlightsFlairId') as string | undefined;
     const livePostBody = await context.settings.get('livePostBody') as string | undefined;
     const livePostFooter = await context.settings.get('livePostFooter') as string | undefined;
-    const offlinePostBody = await context.settings.get('offlinePostBody') as string | undefined;
-    const offlinePostFooter = await context.settings.get('offlinePostFooter') as string | undefined;
+    const concludingPostBody = await context.settings.get('concludingPostBody') as string | undefined;
+    const concludingPostFooter = await context.settings.get('concludingPostFooter') as string | undefined;
     const liveSidebarText = await context.settings.get('liveSidebarText') as string | undefined;
     const liveSidebarFooter = await context.settings.get('liveSidebarFooter') as string | undefined;
     const offlineSidebarText = await context.settings.get('offlineSidebarText') as string | undefined;
@@ -556,7 +601,7 @@ Devvit.addSchedulerJob({
     if (isLive && streamInfo) {
       const postBody = formatLivePostBody(streamInfo, channel as string, youtubeUrl, livePostBody, livePostFooter);
       const displayName = streamInfo.user_name || channel;
-      const postTitle = `🚨${displayName} is LIVE!🚨 - ${streamInfo.title}`;
+      const postTitle = `🚨${displayName} is LIVE!🚨`;
 
       // Reset offline grace period timer if it was active
       const offlineSince = await context.redis.get('offline_since');
@@ -696,11 +741,14 @@ Devvit.addSchedulerJob({
           const broadcasterId = await context.redis.get('twitch_broadcaster_id');
           const startedAt = await context.redis.get('twitch_started_at');
           const streamTitle = await context.redis.get('twitch_stream_title') || 'Recent Stream';
+          const cachedDisplayName = await context.redis.get('twitch_display_name');
+          const displayName = cachedDisplayName || (channel as string);
           
           // Clean up the cached stream details
           await context.redis.del('twitch_broadcaster_id');
           await context.redis.del('twitch_started_at');
           await context.redis.del('twitch_stream_title');
+          await context.redis.del('twitch_display_name');
           
           if (postId) {
             try {
@@ -714,9 +762,17 @@ Devvit.addSchedulerJob({
                   console.log(`Removing post from feed: ${postId}`);
                   await post.remove();
                 } else {
-                  // Update post body with a concluding offline conclusion message
+                  // Update live post body with the concluding message
                   try {
-                    const concludingBody = formatOfflinePostBody(channel as string, youtubeUrl, offlinePostBody, offlinePostFooter);
+                    const concludingBody = formatOfflinePostBody(
+                      channel as string,
+                      youtubeUrl,
+                      concludingPostBody,
+                      concludingPostFooter,
+                      DEFAULT_CONCLUDING_POST_BODY,
+                      displayName,
+                      streamTitle
+                    );
                     await post.edit({ text: concludingBody });
                     console.log(`Successfully updated concluding body for post: ${postId}`);
                   } catch (editError) {
@@ -752,6 +808,7 @@ Devvit.addSchedulerJob({
                 startedAt,
                 streamTitle,
                 channel as string,
+                displayName,
                 highlightsFlairId
               );
             } catch (highlightsError) {

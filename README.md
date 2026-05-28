@@ -9,8 +9,6 @@ The Bot monitors the livestreaming status of a designated Twitch channel and cre
 [![YouTube Integration](https://img.shields.io/badge/Integration-YouTube-FF0000?style=for-the-badge&logo=youtube)](https://developers.google.com/youtube)
 [![Redis Cached](https://img.shields.io/badge/Database-Redis%20Cache-D82C20?style=for-the-badge&logo=redis)](https://redis.io)
 
-
-
 This bot automatically monitors a specified Twitch stream, creates and flairs a dedicated live discussion thread when the stream goes live, updates the stats (viewers, uptime, category) in real-time every 2 minutes, auto-pins a customizable moderator comment, and unpins/concludes the thread with VOD archives when the stream goes offline.
 
 ## ✨ Core Features
@@ -118,62 +116,101 @@ Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **live-sticky
 
 If you need to restore or tweak the default texts, you can copy these markdown templates:
 
-#### 1. Default Offline Post Body:
+#### 1. Default Live Post Body
+
 ```markdown
-### 😴 STREAM OFFLINE
-
-The stream has ended. Thank you for watching! 
-
----
-### 📺 Channels:
-* **Twitch:** [twitch.tv/{channel}](https://twitch.tv/{channel})
-* **YouTube:** [Watch VODs on YouTube]({youtube_url})
-
----
-*This live thread has concluded. VODs and highlights may be available on the links above.*
-```
-
-#### 2. Default Offline Sidebar Widget Text:
-```markdown
-# 😴 {display_name} is OFFLINE 😴
-
-The stream is currently offline. Follow the channels below to get notified when we go live!
-
-* [**Twitch Channel**](https://twitch.tv/{channel})
-* [**YouTube Channel**]({youtube_url})
-```
-
-#### 3. Default Live Post Body:
-```markdown
-### 🔴 LIVE NOW: {title}
+### 🚨 {display_name} is LIVE! 🚨 — {title}
 
 * **Category/Game:** {game}
 * **Current Viewers:** {viewers}
 * **Uptime:** live for {uptime}
 
 ---
-### 📺 Where to watch:
-* **Twitch:** [twitch.tv/{channel}](https://twitch.tv/{channel})
-* **YouTube:** [Watch on YouTube]({youtube_url})
+### 📺 Channels:
+* **🟣 Twitch:** [Watch Live on Twitch](https://twitch.tv/{channel})
+* **▶️ YouTube:** [Watch Live on YouTube]({youtube_url})
 
 ---
-*Stats are auto-updated in real-time by the subreddit bot.*
+*Stats are auto-updated in real-time by LiveSticky.*
 ```
 
-#### 4. Default Live Sidebar Widget Text:
-```markdown
-# 🚨 {display_name} is LIVE! 🚨
+#### 2. Default Concluding Post Body
 
-* **Game:** {game}
-* **Viewers:** {viewers}
-* **Uptime:** live for {uptime}
+```markdown
+### 👋 Stream Ended — Thanks for watching! 👋
 
 **Title:**
 {title}
 
-[**👉 Watch Live on Twitch**](https://twitch.tv/{channel})
+The stream has concluded. VODs and highlights may be available via the links below.
 
-[**📺 Watch on YouTube**]({youtube_url})
+---
+### 📺 Channels:
+* **🟣 Twitch:** [Watch VODs on Twitch](https://twitch.tv/{channel})
+* **▶️ YouTube:** [Watch VODs on YouTube]({youtube_url})
+
+---
+*This live thread has concluded and is now locked.*
+```
+
+#### 3. Default Offline Post Body
+
+```markdown
+### 😴 {display_name} is Offline. 😴
+
+The stream is currently offline. Check back soon or follow the channels below to get notified when {display_name} goes live!
+
+---
+### 📺 Channels:
+* **🟣 Twitch:** [Watch VODs on Twitch](https://twitch.tv/{channel})
+* **▶️ YouTube:** [Watch VODs on YouTube]({youtube_url})
+```
+
+#### 4. Default Live Sidebar Widget Text
+
+```markdown
+# 🚨 {display_name} is LIVE! 🚨
+
+**Title:**
+{title}
+
+* **Category/Game:** {game}
+* **Current Viewers:** {viewers}
+* **Uptime:** live for {uptime}
+
+[**🟣 Watch Live on Twitch**](https://twitch.tv/{channel})
+
+[**▶️ Watch on YouTube**]({youtube_url})
+```
+
+#### 5. Default Offline Sidebar Widget Text
+
+```markdown
+# 😴 {display_name} is OFFLINE. 😴
+
+Follow the channels below to get notified when {display_name} goes live!
+
+[**🟣 Visit Twitch Channel**](https://twitch.tv/{channel})
+
+[**▶️ Visit YouTube Channel**]({youtube_url})
+```
+
+#### 6. Default Stream Highlights Header
+
+```markdown
+### 🎬 Top Clips from {display_name}'s stream ({date})
+
+**Title:**
+{title}
+
+Here are the most-watched Twitch clips from today's stream, compiled automatically by LiveSticky.
+```
+
+#### 7. Default Stream Highlights Footer
+
+```markdown
+---
+*Watch VODs and catch the next stream live on [twitch.tv/{channel}](https://twitch.tv/{channel})!*
 ```
 
 ## 🔑 How to Get Twitch Credentials
@@ -209,7 +246,7 @@ No user data is sent to these external services. Only the bot's own Client ID an
 
 ## 👨‍💻 Author & Credits
 
-*   **Developer:** Created by [u/iammesutkaya](https://reddit.com/u/iammesutkaya)
-*   **Twitch:** Follow the live channel at [twitch.tv/mesutkaya](https://twitch.tv/mesutkaya)
+* **Developer:** Created by [u/iammesutkaya](https://reddit.com/u/iammesutkaya)
+* **Twitch:** Follow the live channel at [twitch.tv/mesutkaya](https://twitch.tv/mesutkaya)
 
 *Created with ❤️ for the community.*
