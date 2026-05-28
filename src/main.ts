@@ -65,16 +65,16 @@ Devvit.addSettings([
       {
         type: 'boolean',
         name: 'removeOfflinePost',
-        label: 'Remove Post from Feed when Offline',
+        label: 'Remove Live Post from Feed when Offline',
         defaultValue: false,
-        helpText: 'Moderator action: Hides the post from the main subreddit listing when offline. It remains accessible via direct link/comment history, but won\'t flood the feed.',
+        helpText: 'Moderator action: Hides the live post from the main subreddit listing when offline. It remains accessible via direct link/comment history, but won\'t flood the feed.',
       },
       {
         type: 'boolean',
         name: 'deleteOfflinePost',
-        label: 'Delete Post completely when Offline',
+        label: 'Delete Live Post completely when Offline',
         defaultValue: false,
-        helpText: 'Deletes the post and all its comments completely from Reddit when the stream ends.',
+        helpText: 'Deletes the live post and all its comments completely from Reddit when the stream ends.',
       },
       {
         type: 'number',

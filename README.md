@@ -86,8 +86,8 @@ Configure these options by going to **Mod Tools** ➔ **Apps** ➔ **live-sticky
 
 | Setting Name | Type | Description |
 | :--- | :--- | :--- |
-| **Remove Post from Feed when Offline** | `Boolean` | Moderator action: Hides the post from the main subreddit listing when offline (prevents feed flooding while keeping comments/links active). |
-| **Delete Post completely when Offline** | `Boolean` | Completely deletes the post and comments from Reddit when the stream ends. |
+| **Remove Live Post from Feed when Offline** | `Boolean` | Moderator action: Hides the live post from the main subreddit listing when offline (prevents feed flooding while keeping comments/links active). |
+| **Delete Live Post completely when Offline** | `Boolean` | Completely deletes the live post and all its comments from Reddit when the stream ends. |
 | **Offline Grace Period (Minutes)** | `Number` | The buffer period (in minutes) to wait before concluding the stream post when detected offline (defaults to `6`). Prevents duplicate threads during brief stream crashes. |
 | **Enable Sticky Offline Post** | `Boolean` | Recycles a single permanent stickied post when offline (`😴[DisplayName] is OFFLINE! CHECK OUT NEWS & USEFUL LINKS😴`) to prevent new-post notifications, automatically clearing/flushing old comments on each transition so the comment section starts fresh. |
 | **Enable Sidebar Widget** | `Boolean` | Creates and automatically updates a "STREAM STATUS" text widget in your subreddit sidebar reflecting the live/offline state, category, viewers, and uptime in real-time. |
