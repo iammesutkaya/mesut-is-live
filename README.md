@@ -227,6 +227,7 @@ To configure the bot, you need a **Twitch Client ID** and **Twitch Client Secret
    * **Name**: Choose a unique name (e.g., `Subreddit-Stream-Notifier-Bot`).
    * **OAuth Redirect URLs**: Enter `http://localhost` (a placeholder is fine; the bot uses the secure Client Credentials flow and does not need a redirect web page).
    * **Category**: Select **Application Integration** or **Chat Bot**.
+   * **Client Type**: Select **Confidential** (required to generate a Client Secret for secure server-to-server requests).
 4. Click **Create**.
 5. Find your newly created application and click **Manage**:
    * Copy the **Client ID** and paste it into the bot settings.
