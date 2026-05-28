@@ -15,15 +15,10 @@
  */
 
 // ---------------------------------------------------------------------------
-// Post Titles
-// ---------------------------------------------------------------------------
-export const DEFAULT_LIVE_POST_TITLE = '🚨 {display_name} is LIVE! 🚨';
-export const DEFAULT_OFFLINE_POST_TITLE = '😴 {display_name} is Offline 😴';
-export const DEFAULT_HIGHLIGHTS_POST_TITLE = '🎬 Stream Highlights: {display_name} ({date})';
-
-// ---------------------------------------------------------------------------
 // Live post (submitted & pinned when stream goes live)
 // ---------------------------------------------------------------------------
+export const DEFAULT_LIVE_POST_TITLE = '🚨 {display_name} is LIVE! 🚨';
+
 export const DEFAULT_LIVE_POST_BODY = `\
 ### 🚨 {display_name} is LIVE! 🚨 — {title}
 
@@ -61,6 +56,8 @@ The stream has concluded. VODs and highlights may be available via the links bel
 // ---------------------------------------------------------------------------
 // Offline post (permanent sticky post shown on the subreddit when stream is offline)
 // ---------------------------------------------------------------------------
+export const DEFAULT_OFFLINE_POST_TITLE = '😴 {display_name} is Offline 😴';
+
 export const DEFAULT_OFFLINE_POST_BODY = `\
 ### 😴 {display_name} is Offline. 😴
 
@@ -101,8 +98,10 @@ Follow the channels below to get notified when {display_name} goes live!
 [**▶️ Visit YouTube Channel**]({youtube_url})`;
 
 // ---------------------------------------------------------------------------
-// Highlights post header (shown above the auto-generated clip list)
+// Highlights post (shown when stream highlights are enabled)
 // ---------------------------------------------------------------------------
+export const DEFAULT_HIGHLIGHTS_POST_TITLE = '🎬 Stream Highlights: {display_name} ({date})';
+
 export const DEFAULT_HIGHLIGHTS_POST_HEADER = `\
 ### 🎬 Top Clips from {display_name}'s stream ({date})
 
